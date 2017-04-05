@@ -13,7 +13,6 @@ tags: hexo
 所以 我们需要在其他 repo 进行文章的备份。
 <!-- more -->
 原文：<http://www.jianshu.com/p/f746f8f7b32d>
-
 ### 操作步骤
 
 #### 上传操作
@@ -70,7 +69,7 @@ push到另外一个 分支中
 当然了，修改了文章或者其他东西，在 deploy 前 还是 先 commit 和push 一下哦
 记得：所有的本地操作 都在 source 分支里面。
 
-下载操作
+#### 下载操作
 
 现在我们切换视觉到 一台新的电脑上，
 在这台电脑上没有 Node.js,没有 Hexo，没有 Git
@@ -85,7 +84,7 @@ push到另外一个 分支中
 
 具体操作如下
 
-把文章下载下来
+##### 把文章下载下来
 
 找到自己喜欢的 路径，新建一个文件夹，命名随意，自己认识就好
 打开 git bash
@@ -97,7 +96,7 @@ master分支是 Hexo 编译之后的 网站程序，我们的文章在 source �
   `git checkout source`
 这个时候文件夹内的 内容已经是 我们的文章了
 
-配置 git ssh key
+##### 配置 git ssh key
 
 还是在当前的 git bash 界面
 
@@ -123,7 +122,7 @@ master分支是 Hexo 编译之后的 网站程序，我们的文章在 source �
 如果返回 Hello <username> (username 表示你的用户名)
 表示成功
 
-然后就是配置 Hexo 程序了
+##### 然后就是配置 Hexo 程序了
 
 安装 hexo
 
