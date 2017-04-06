@@ -32,6 +32,10 @@ Linux下的任务调度分为两类，系统任务调度和用户任务调度。
   52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
   ```
 前四行是用来配置crond任务运行的环境变量，第一行SHELL变量指定了系统要使用哪个shell，这里是bash，第二行PATH变量指定了系统执行命令的路径，第三行MAILTO变量指定了crond的任务执行信息将通过电子邮件发送给root用户，如果MAILTO变量的值为空，则表示不发送任务执行信息给用户，第四行的HOME变量指定了在执行命令或者脚本时使用的主目录。
+
+用户任务调度：用户定期要执行的工作，比如用户数据备份、定时邮件提醒等。用户可以使用 crontab 工具来定制自己的计划任务。所有用户定义的crontab 文件都被保存在 /var/spool/cron目录中。其文件名与用户名一致。
+
+**使用者权限文件：**
 /var/spool/cron：所有用户定义的crontab 文件都被保存在目录中，其文件名与用户名一致。
 /etc/cron.deny：该文件中所列用户不允许使用crontab命令。
 /etc/cron.allow：该文件中所列用户允许使用crontab命令，优先于/etc/cron.deny
