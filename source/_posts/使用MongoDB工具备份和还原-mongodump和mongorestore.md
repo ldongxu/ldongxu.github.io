@@ -5,7 +5,7 @@ categories: mongodb
 tags: [mongodb备份还原,mongodb]
 ---
 MongoDB version：3.4
-之前已经搭建了mongodb复制集，主要结构是一主二从（其中的一个从节点为仲裁节点），mongodb复制集主要目的是为了故障转移，但是出于数据安全角度考虑，数据备份也是非常关键的。
+之前已经搭建了mongodb副本集，主要结构是一主二从（其中的一个从节点为仲裁节点），mongodb复制集主要目的是为了故障转移，但是出于数据安全角度考虑，数据备份也是非常关键的。
 MongoDB的备份其实算是一个基本操作。具体使用操作建议参看官方文档，官方文档的介绍比较全面也会有相关的建议。
 <!-- more -->
 ### 常见的备份方式：
@@ -41,28 +41,28 @@ oplog有一个非常重要的特性——幂等性（idempotent）。即对一�
 聪明如你可能已经想到，既然dump出的数据配合oplog就可以把数据库恢复到某个状态，那是不是拥有一份从某个时间点开始备份的dump数据，再加上从dump开始之后的oplog，如果oplog足够长，是不是就可以把数据库恢复到其后的任意状态了？是的！事实上replica set正是依赖oplog的重放机制在工作。当secondary第一次加入replica set时做的initial sync就相当于是在做mongodump，此后只需要不断地同步和重放oplog.rs中的数据，就达到了secondary与primary同步的目的。
 
 既然oplog一直都在oplog.rs中存在，我们为什么还需要在mongodump时指定--oplog呢？需要的时候从oplog.rs中拿不就完了吗？答案是肯定的，你确实可以只dump数据，不需要oplog。在需要的时候可以再从oplog.rs中取。但前提是oplog时间窗口（忘了时间窗口概念的请往前翻）必须能够覆盖dump的开始时间。
-
+[参考链接](http://www.cnblogs.com/yaoxing/p/mongodb-backup-rules.html):<http://www.cnblogs.com/yaoxing/p/mongodb-backup-rules.html>
 ### mongodump几个例子
-    数据库在本地27017端口上运行
-  `mongodump  --db test --collection collection`
+数据库在本地27017端口上运行
+`mongodump  --db test --collection collection`
 	
-   需要认证，备份输出到指定目录
-  `mongodump --host mongodb1.example.net --port 37017 --username user --password pass --out /opt/backup/mongodump-2011-10-24`
+需要认证，备份输出到指定目录
+`mongodump --host mongodb1.example.net --port 37017 --username user --password pass --out /opt/backup/mongodump-2011-10-24`
 
-   数据库备份到归档文件test.20150715.archive。*不能将--archive选项与-out选项一起使用*
-  `mongodump --archive=test.20150715.archive --db test`
+数据库备份到归档文件test.20150715.archive。*不能将--archive选项与-out选项一起使用*
+`mongodump --archive=test.20150715.archive --db test`
 
-	归档并压缩
-  `mongodump --archive=test.20150715.gz --gzip --db test`
+归档并压缩
+`mongodump --archive=test.20150715.gz --gzip --db test`
 
-   副本集备份（以副本集名称为前缀，mongodump将默认从主节点成员读取）
-  `mongodump --host "replSet/rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017"`
+副本集备份（以副本集名称为前缀，mongodump将默认从主节点成员读取）
+`mongodump --host "replSet/rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017"`
 
-   副本集备份（不包含副本集名称作为主机字符串的前缀，mongodump则默认从最近的节点读取。）
-  `mongodump --host "rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017"`
+副本集备份（不包含副本集名称作为主机字符串的前缀，mongodump则默认从最近的节点读取。）
+`mongodump --host "rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017"`
 
-  `mongodump --host "replSet/rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017" --username user --password --oplog --gzip --out  /home/data/mongobak`
-  
+`mongodump --host "replSet/rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017" --username user --password --oplog --gzip --out  /home/data/mongobak`
+
 ### mongodb备份和恢复角色
 admin数据库中包括了备份和还原数据的角色backup和restore。（只在admin库中存在）
 backup：提供备份数据所需的权限。 该角色提供了使用MongoDB Cloud Manager备份代理，Ops Manager备份代理或使用mongodump的足够权限。

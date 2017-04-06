@@ -12,7 +12,7 @@ tags: hexo
 如果需要在不同地点进行 文章发布的话，就没有办法完成了（先不考虑草稿的事）
 所以 我们需要在其他 repo 进行文章的备份。
 <!-- more -->
-原文：<http://www.jianshu.com/p/f746f8f7b32d>
+参考链接：<http://www.jianshu.com/p/f746f8f7b32d>
 
 ### 操作步骤
 
