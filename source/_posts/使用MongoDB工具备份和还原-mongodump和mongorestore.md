@@ -28,7 +28,7 @@ mongodump只捕获数据库中的文档。 生成的备份是空间有效的，�
 **mongodump的选项--oplog是一个值得一提的选项：**
 注意这是replica set或者master/slave模式专用（standalone模式运行mongodb并不推荐）。
 它的实际作用是在导出的同时生成一个oplog.bson文件，存放在你开始进行dump到dump结束之间所有的oplog。
-![])(http://images2015.cnblogs.com/blog/333151/201509/333151-20150914022238492-1981549003.png)
+![](http://images2015.cnblogs.com/blog/333151/201509/333151-20150914022238492-1981549003.png)
 简单地说，在replica set中oplog是一个定容集合（capped collection），它的默认大小是磁盘空间的5%（可以通过--oplogSizeMB参数修改），位于local库的db.oplog.rs，有兴趣可以看看里面到底有些什么内容。其中记录的是整个mongod实例一段时间内数据库的所有变更（插入/更新/删除）操作。
 oplog有一个非常重要的特性——幂等性（idempotent）。即对一个数据集合，使用oplog中记录的操作重放时，无论被重放多少次，其结果会是一样的。举例来说，如果oplog中记录的是一个插入操作，并不会因为你重放了两次，数据库中就得到两条相同的记录。这是一个很重要的特性，也是后面这些操作的基础。
 
@@ -62,6 +62,8 @@ oplog有一个非常重要的特性——幂等性（idempotent）。即对一�
 `mongodump --host "rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017"`
 
 `mongodump --host "replSet/rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017" --username user --password --oplog --gzip --out  /home/data/mongobak`
+
+`mongorestore --host "replSet/rep1.example.net:27017,rep2.example.net:27017,rep3.example.net:27017" --username user --password --gzip --db test  /home/data/mongobak`
 
 ### mongodb备份和恢复角色
 admin数据库中包括了备份和还原数据的角色backup和restore。（只在admin库中存在）
