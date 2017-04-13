@@ -1,12 +1,12 @@
 ---
 title: nginx负载均衡配置详解
 date: 2017-03-28 10:55:21
-categories: 服务器
+categories: nginx
 tags: nginx
 description: nginx负载均衡反向代理配置详解
 ---
 
-nginx负载均衡反向代理配置详解：
+nginx负载均衡反向代理配置示例详解：
 <!--more-->
 ```
 worker_processes  2;
