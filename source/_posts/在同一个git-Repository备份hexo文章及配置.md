@@ -1,6 +1,6 @@
 ---
 title: 在同一个git Repository备份hexo文章及配置
-date: 2016-01-01 18:10:33
+date: 2016-01-02 18:10:33
 categories: hexo
 tags: hexo
 ---
