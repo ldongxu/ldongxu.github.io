@@ -110,6 +110,7 @@ rsync [OPTION]... rsync://[USER@]HOST[:PORT]/SRC [DEST]
 4. 从远程rsync服务器中拷贝文件到本地机。当SRC路径信息包含"::"分隔符时启动该模式。如：rsync -av root@192.168.78.192::www /databack 
 5. 从本地机器拷贝文件到远程rsync服务器中。当DST路径信息包含"::"分隔符时启动该模式。如：rsync -av /databack root@192.168.78.192::www 
 6. 列远程机的文件列表。这类似于rsync传输，不过只要在命令中省略掉本地机信息即可。如：rsync -v rsync://192.168.78.192/www 
+
 #### 选项
 ```
 -v, --verbose 详细模式输出。 
