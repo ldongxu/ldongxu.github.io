@@ -1,6 +1,6 @@
 ---
 title: 解决Ajax跨域访问－JSONP
-date: 2017-04-19 10:46:59
+date: 2016-02-24 10:03:59
 categories: JavaScript
 tags: [Ajax,JSONP]
 ---
