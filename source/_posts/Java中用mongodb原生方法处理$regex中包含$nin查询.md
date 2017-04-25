@@ -1,5 +1,5 @@
 ---
-title: Java中用mongodb原生方法处理$regex中包含$nin查询
+title: 以db.runCommand方式解决$regex和$nin并列查询
 date: 2017-04-25 21:53:24
 categories: [Java,mongodb]
 tags: [Java,mongodb]
