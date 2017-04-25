@@ -6,7 +6,7 @@ tags: [Java,mongodb]
 ---
 用mongodb的Java驱动，而非Spring-data-mongodb的封装以db.runCommand方式做查询。
 <!--more-->
-开发中遇到一个需求是利用mongodb模糊查询查询除已选中的标签外的其它标签，比如：标签库中有‘Java，Javascript，Jade，Core Java，Node.js，Python，JavaEE’，已选中的标签有‘Java，Jade’，现在输入‘ja’需要需要查出包含‘ja’(不区分大小写)的标签并且排除已选中的‘Java，Jade’。
+开发中遇到一个需求是利用mongodb模糊查询查询除已选中的标签外的其它标签，比如：标签库中有‘Java，Javascript，Jade，Core Java，Node.js，Python，JavaEE’，已选中的标签有‘Java，Jade’，现在输入‘ja’需要查出包含‘ja’(不区分大小写)的标签并且排除已选中的‘Java，Jade’。
 
 ### 用Spring-data-mongodb做$regex和$nin模糊查询时的问题
 ```java
