@@ -1,6 +1,6 @@
 ---
 title: 静态工具类获取Spring IoC管理的bean组件
-date: 2017-04-25 14:05:03
+date: 2016-03-25 14:05:03
 categories: Java
 tags: [Java,Spring]
 ---
