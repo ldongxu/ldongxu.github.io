@@ -119,7 +119,7 @@ ssh -T git@github.com
 安装 hexo:
 ```
 npm install hexo-cli -g
-npm install hexo --save`
+npm install hexo --save
 ```
 
 检查 hexo 是否安装成功：
@@ -129,9 +129,11 @@ hexo -v
 这个时候就不做初始化了.
 
 + **4.自动安装需要的组件**
+
 ```
 npm install
 ```
+
 安装 git 部署的插件：
 ```
 npm install hexo-deployer-git --save
