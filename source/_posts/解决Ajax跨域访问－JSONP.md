@@ -201,7 +201,7 @@ jQuery框架也当然支持JSONP，可以使用$.getJSON(url,[data],[callback])�
 ```
 　　结果是一样的，要注意的是在url的后面必须添加一个callback参数，这样getJSON方法才会知道是用JSONP方式去访问服务，callback后面的那个问号是内部自动生成的一个回调函数名。这个函数名大家可以debug一下看看，比如jQuery17207481773362960666_1332575486681。
 
-　　当然，假如说我们想指定自己的回调函数名，或者说服务上规定了固定回调函数名该怎么办呢？我们可以使用$.ajax方法来实现(参数较多，详细可以参考http://api.jquery.com/jQuery.ajax)。先来看看如何实现吧：
+　　当然，假如说我们想指定自己的回调函数名，或者说服务上规定了固定回调函数名该怎么办呢？我们可以使用$.ajax方法来实现(参数较多，详细可以参考<http://api.jquery.com/jQuery.ajax>)。先来看看如何实现吧：
 ```
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
 <script type="text/javascript">
