@@ -5,7 +5,7 @@ categories: Java
 tags: Java
 ---
 System.getenv()是获取系统环境变量，System.getProperty()是获取当前系统相关属性信息。
-<!--mror-->
+<!--mroe-->
 ## System.getenv()方法
 JDK中的说明：
 >Returns an unmodifiable string map view of the current system environment.
