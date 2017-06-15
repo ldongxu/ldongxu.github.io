@@ -9,7 +9,7 @@ tags: [Java队列,Queue,Java]
 Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Queue接 口。Queue接口窄化了对LinkedList的方法的访问权限（即在方法中的参数类型如果是Queue时，就完全只能访问Queue接口所定义的方法了，而不能直接访问LinkedList的非Queue的方法），以使得只有恰当的方法才可以使用。
 
 
-## 队列
+## 队列 Queue
 首先看一下java.util下的Queue接口定义：
 ```java
 package java.util;
@@ -54,7 +54,7 @@ Queue接口继承了`java.util.Collection`，Queue接口方法概要：
 | 移除 | remove() | poll() | remove()移除并返回队列头部的元素    如果队列为空，则抛出一个NoSuchElementException；<br>poll()移除并返问队列头部的元素 如果队列为空，则返回null |
 | 查找 | element() | peek() | element()返回队列头部的元素             如果队列为空，则抛出一个NoSuchElementException；<br>peek()返回队列头部的元素  如果队列为空，则返回null |
 
-## 阻塞队列
+## 阻塞队列 BlockingQueue
 
 >阻塞队列 (BlockingQueue)是`java.util.concurrent`包下重要的数据结构，BlockingQueue继承了Queue接口。
 BlockingQueue提供了线程安全的队列访问方式：当阻塞队列进行插入数据时，如果队列已满，线程将会阻塞等待直到队列非满；从阻塞队列取数据时，如果队列已空，线程将会阻塞等待直到队列非空。并发包下很多高级同步类的实现都是基于BlockingQueue实现的。
