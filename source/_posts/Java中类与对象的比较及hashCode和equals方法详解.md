@@ -71,6 +71,7 @@ if(Object.class.isInstance(obj)) {
 }
 ```
 >Class<?>.isInstance(obj) 用于检测 非直接实现关系，检测方式是 类->对象。
+
 `isInstance`是用C语言 native 代码实现的。当一个类继承了某个接口，类，或者而是抽象类。那么，`isInstance` 旨在查找出这个对象到底实现了哪些类。
 ```
 interface I {
