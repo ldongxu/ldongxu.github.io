@@ -10,7 +10,8 @@ tags: Java
 
 类与类的比较，通常有两种方式：
 
-1. 直接用 == 比较class：在Java中，类是静态的，唯一的，共享的单例，所以这里用 == 在恰当不过了，使用 == 更能说明实现关系。
+1、 直接用 == 比较class：在Java中，类是静态的，唯一的，共享的单例，所以这里用 == 在恰当不过了，使用 == 更能说明实现关系。
+
 ```
 Integer obj1 = 1;
 Integer obj2 = 1;
@@ -22,7 +23,7 @@ if(obj1.getClass() == obj2.getClass()) {
   // true
 }
 ```
-2. 比较 class.getName()。
+2、 比较 class.getName()。
 ```
 Integer obj1 = 1;
 Integer obj2 = 1;
@@ -39,7 +40,7 @@ if(obj1.getClass().getName() == obj2.getClass().getName()) {
 
 判读啊一个对象和一个类是不是具有实现关系，通常有两种方式：
 
-1.  obj instanceof Class ：
+1、obj instanceof Class ：
 
 ```
 // 注意：obj 不能是原始类型，例如 int, long
@@ -59,7 +60,7 @@ if(obj instanceof Object) {
 
 >instanceof 用于检测类与对象的 直接实现关系，检测方式是 对象->类。
 
-2. Class<?>.isInstance(obj)
+2、 Class<?>.isInstance(obj)
 
 ```
 // 注意：obj 可以是引用类型，也可以是原始类型，例如 int, long
