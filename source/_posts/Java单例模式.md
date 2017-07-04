@@ -42,7 +42,7 @@ public class Singleton{
 ```
 种方式基于classloder机制避免了多线程的同步问题，不过，instance在类装载时就实例化，虽然导致类装载的原因有很多种，在单例模式中大多数都是调用getInstance方法，但是也不能确定有其他的方式（或者其他的静态方法）导致类装载，这时候初始化instance显然没有达到lazy loading的效果。
 
-三、静态内部类（线程安全）
+#### 三、静态内部类（线程安全）
 
 ```java
 public class Singleton {
@@ -59,7 +59,7 @@ public class Singleton {
 ```
 这种方式是Singleton类被装载了，instance不一定被初始化。因为SingletonHolder类没有被主动使用，只有显示通过调用getInstance方法时，才会显式装载SingletonHolder类，实例化instance，从而达到lazy loading效果，同时根据JVM本身机制，静态内部类的加载能够保证线程安全。
 
-四、枚举法
+#### 四、枚举法
 
 以上方式存在两种创建新实例的风险，一是通过反射机制调用私有构造器，二是通过反序列化一个序列化的实例。
 
