@@ -48,11 +48,12 @@ public interface Queue<E> extends Collection<E> {
 除了基本的继承了java.util.Collection的操作之外，队列提供额外的插入、提取和查找操作。这些方法中的每一种都有两种形式：一种是如果操作失败则抛出一个异常，另一个返回一个特殊的值（`null`或`false`），具体取决于操作）。后一种形式的插入操作设计，专门用于容量限制实现;（在大多数实现中，插入操作不能失败。）
 
 Queue接口继承了`java.util.Collection`，Queue接口方法概要：
-| 方法 |  抛出异常  | 返回特定值 |  说明   |
-| --------   | ----- |  ----  | :----: |
+
+| 方法  | 抛出异常 | 返回特定值 |   说明   |
+| ---- | ----- |  -----  | :-----: |
 | 插入 | add(e) | offer(e) | add(e)如果队列已满，则抛出一个IIIegaISlabEepeplian异常；<br>offer(e)如果队列已满返回false，否则返回true |
-| 移除 | remove() | poll() | remove()移除并返回队列头部的元素    如果队列为空，则抛出一个NoSuchElementException；<br>poll()移除并返问队列头部的元素 如果队列为空，则返回null |
-| 查找 | element() | peek() | element()返回队列头部的元素             如果队列为空，则抛出一个NoSuchElementException；<br>peek()返回队列头部的元素  如果队列为空，则返回null |
+| 移除 | remove() | poll() | remove()移除并返回队列头部的元素。如果队列为空，则抛出一个NoSuchElementException；<br>poll()移除并返问队列头部的元素。如果队列为空，则返回null |
+| 查找 | element() | peek() | element()返回队列头部的元素。如果队列为空，则抛出一个NoSuchElementException；<br>peek()返回队列头部的元素。如果队列为空，则返回null |
 
 ## 阻塞队列 BlockingQueue
 
@@ -76,7 +77,7 @@ BlockingQueue是个接口，你需要使用它的实现之一来使用BlockingQu
 
 + **DelayQueue**：DelayQueue 对元素进行持有直到一个特定的延迟到期。注入其中的元素必须实现 java.util.concurrent.Delayed 接口。
 
-+ LinkedBlockingQueue：LinkedBlockingQueue 内部以一个链式结构(链接节点)对其元素进行存储。如果需要的话，这一链式结构可以选择一个上限。如果没有定义上限，将使用 Integer.MAX_VALUE 作为上限。
++ **LinkedBlockingQueue**：LinkedBlockingQueue 内部以一个链式结构(链接节点)对其元素进行存储。如果需要的话，这一链式结构可以选择一个上限。如果没有定义上限，将使用 Integer.MAX_VALUE 作为上限。
 
 + **PriorityBlockingQueue**：PriorityBlockingQueue 是一个无界的并发队列。它使用了和类java.util.PriorityQueue一样的排序规则。你无法向这个队列中插入null值。所有插入到PriorityBlockingQueue 的元素必须实现 java.lang.Comparable 接口。因此该队列中元素的排序就取决于你自己的 Comparable 实现。
 

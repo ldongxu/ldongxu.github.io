@@ -7,7 +7,7 @@ title: 刘东旭博客
 subtitle: 8小时内求生存，8小时外求发展
 description: 「人若无名, 便可专心练剑」
 author: 刘东旭
-language: zh-Hans
+language: zh-CN
 timezone:
 
 # URL
@@ -63,7 +63,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: icarus
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
