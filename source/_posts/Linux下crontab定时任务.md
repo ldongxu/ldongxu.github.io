@@ -2,7 +2,7 @@
 title: Linux下crontab定时任务
 date: 2017-03-30 18:02:33
 categories: Linux
-tags: crontab
+tags: [Linux,crontab]
 ---
 因为需要在Linux下定时对数据库做备份，所以对Linux的crontab服务做了一些简单的了解。
 以下内容是在实际操作过程中遇到的一些问题及相关技术翻案，包括crontab简单了解、怎么用vi打开编辑crontab、crontab时间表达式、定时任务输出重定向等问题。

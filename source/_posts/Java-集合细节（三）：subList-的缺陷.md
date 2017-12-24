@@ -2,7 +2,7 @@
 title: Java 集合细节（三）：subList 的缺陷
 date: 2017-06-02 18:32:24
 categories: Java
-tags: Java
+tags: Java集合
 ---
 我们经常使用 subString 方法来对 String 对象进行分割处理，同时我们也可以使用 subList、subMap、subSet 来对 List、Map、Set 进行分割处理，但是这个分割存在某些瑕疵。
 <!--more-->

@@ -1,8 +1,8 @@
 ---
 title: Java单例模式
 date: 2017-07-04 16:06:34
-catagories: Java
-tags: [Singleton,Java]
+catagories: Java设计模式
+tags: [单例模式,Java]
 ---
 单例类可以是没有状态的，一般仅用做提供工具性函数的对象。既然是提供工具性函数，也就没有必要创建多个实例。
 <!--more-->

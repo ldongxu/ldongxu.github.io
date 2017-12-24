@@ -1,8 +1,8 @@
 ---
 title: 使用MongoDB工具备份和还原(mongodump和mongorestore)
 date: 2017-04-06 16:46:42
-categories: mongodb
-tags: [mongodb备份还原,mongodb]
+categories: Mongodb
+tags: Mongodb备份还原
 ---
 MongoDB version：3.4
 之前已经搭建了mongodb副本集，主要结构是一主二从（其中的一个从节点为仲裁节点），mongodb复制集主要目的是为了故障转移，但是出于数据安全角度考虑，数据备份也是非常关键的。

@@ -10,7 +10,6 @@
                     <div class="article-meta">
                         <%- partial('post/date', { class_name: 'article-date', date_format: null }) %>
                         <%- partial('post/category') %>
-                        <%- partial('post/tag') %>
                     </div>
                 <% } %>
             </header>
@@ -33,7 +32,7 @@
         <% } %>
         </div>
         <footer class="article-footer">
-            <%- partial('share/index', { post: post }) %>
+            <%- partial('post/tag') %>
             <%- partial('comment/counter', { post: post }) %>
         </footer>
     </div>

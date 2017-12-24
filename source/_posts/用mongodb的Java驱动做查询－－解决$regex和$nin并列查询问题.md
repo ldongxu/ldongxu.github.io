@@ -1,8 +1,8 @@
 ---
 title: 用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题
 date: 2017-04-25 21:53:24
-categories: Java
-tags: [Java, mongodb]
+categories: Mongodb
+tags: [Java, Mongodb]
 ---
 用mongodb的Java驱动而非Spring-data-mongodb的封装，以db.runCommand方式做查询。
 <!--more-->

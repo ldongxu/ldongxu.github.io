@@ -2,7 +2,7 @@
 title: Java代码块
 date: 2017-06-05 16:09:54
 caregories: Java
-tags: Java
+tags: [Java,代码块]
 ---
 在编程过程中我们可能会遇到如下这种形式的程序：
 

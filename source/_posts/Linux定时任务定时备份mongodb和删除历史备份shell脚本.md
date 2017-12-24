@@ -1,8 +1,8 @@
 ---
 title: Linux定时任务定时备份mongodb和删除历史备份shell脚本
 date: 2017-03-29 17:54:24
-categories: mongodb
-tags: [mongodb,crontab,shell]
+categories: Mongodb
+tags: [Linux,Mongodb,crontab,shell]
 english_title: linux_mongodb_backup
 ---
 - Linux下mongodb数据备份shell脚本

@@ -2,7 +2,7 @@
 title: Java 集合细节（二）：asList 的缺陷
 date: 2017-06-02 18:22:00
 categories: Java
-tags: Java
+tags: Java集合
 ---
 在实际开发过程中我们经常使用 asList 讲数组转换为 List，这个方法使用起来非常方便，但是 asList 方法存在几个缺陷：
 <!--more-->

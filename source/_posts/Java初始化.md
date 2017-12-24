@@ -2,7 +2,7 @@
 title: Java初始化
 date: 2017-05-24 10:46:51
 categories: Java
-tags: Java
+tags: [Java,Java初始化]
 ---
 理解Java初始化过程及顺序能更清楚的知道代码的执行顺序，特别是在需要特定的执行顺序的时候就显的更为关键。
 <!--more-->
