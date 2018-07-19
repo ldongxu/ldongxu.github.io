@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Java代码块 | 刘东旭博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="在编程过程中我们可能会遇到如下这种形式的程序： public class Test {     {         ////     } } 这种形式的程序段我们将其称之为代码块，所谓代码块就是用大括号({})将多行代码封装在一起，形成一个独立的数据体，用于实现特定的算法。一般来说代码块是不能单独运行的，它必须要有运行主体。">
+<meta name="keywords" content="Java,代码块">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java代码块">
+<meta property="og:url" content="https://ldongxu.github.io/2017/06/05/Java代码块/index.html">
+<meta property="og:site_name" content="刘东旭博客">
+<meta property="og:description" content="在编程过程中我们可能会遇到如下这种形式的程序： public class Test {     {         ////     } } 这种形式的程序段我们将其称之为代码块，所谓代码块就是用大括号({})将多行代码封装在一起，形成一个独立的数据体，用于实现特定的算法。一般来说代码块是不能单独运行的，它必须要有运行主体。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-06T12:33:08.041Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java代码块">
+<meta name="twitter:description" content="在编程过程中我们可能会遇到如下这种形式的程序： public class Test {     {         ////     } } 这种形式的程序段我们将其称之为代码块，所谓代码块就是用大括号({})将多行代码封装在一起，形成一个独立的数据体，用于实现特定的算法。一般来说代码块是不能单独运行的，它必须要有运行主体。">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+        <meta name="google-site-verification" content="LdaelT6kBjDUrCCsrjBy5SMM7jFVjI3AC0215hMRxfU" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">刘东旭博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/pic_hd.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/pic_hd.jpg" />
+            <h2 id="name">刘东旭</h2>
+            <h3 id="title" style="margin: 1.6em 0em">null</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国 - 北京</span>
+            <a id="follow" target="_blank" href="https://github.com/ldongxu">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                26
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/ldongxu" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="mailto:ldongxu@126.com" target="_blank" title="envelope" class=tooltip>
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Java代码块" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Java代码块
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/06/05/Java代码块/">
+            <time datetime="2017-06-05T08:09:54.000Z" itemprop="datePublished">2017-06-05</time>
+        </a>
+    </div>
+
+
+                        
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>在编程过程中我们可能会遇到如下这种形式的程序：</p>
+<pre><code>public class Test {
+    {
+        ////
+    }
+}
+</code></pre><p>这种形式的程序段我们将其称之为代码块，所谓代码块就是用大括号({})将多行代码封装在一起，形成一个独立的数据体，用于实现特定的算法。一般来说代码块是不能单独运行的，它必须要有运行主体。<br><a id="more"></a><br>在 Java 中代码块主要分为四种：</p>
+<h2 id="一、普通代码块"><a href="#一、普通代码块" class="headerlink" title="一、普通代码块"></a>一、普通代码块</h2><p>普通代码块是我们用得最多的也是最普遍的，它就是在方法名后面用{}括起来的代码段。普通代码块是不能够单独存在的，它必须要紧跟在方法名后面。同时也必须要使用方法名调用它。</p>
+<pre><code>public class Test {
+    public void test(){
+        System.out.println(&quot;普通代码块&quot;);
+    }
+}
+</code></pre><h2 id="二、静态代码块"><a href="#二、静态代码块" class="headerlink" title="二、静态代码块"></a>二、静态代码块</h2><p>想到静态我们就会想到 static，静态代码块就是用 static 修饰的用{}括起来的代码段，它的主要目的就是对静态属性进行初始化。</p>
+<pre><code>public class Test {
+    static{
+        System.out.println(&quot;静态代码块&quot;);
+    }
+}
+</code></pre><h2 id="三、同步代码块"><a href="#三、同步代码块" class="headerlink" title="三、同步代码块"></a>三、同步代码块</h2><p>使用 synchronized 关键字修饰，并使用“{}”括起来的代码片段，它表示同一时间只能有一个线程进入到该方法块中，是一种多线程保护机制。</p>
+<h2 id="四、-构造代码块"><a href="#四、-构造代码块" class="headerlink" title="四、 构造代码块"></a>四、 构造代码块</h2><p>在类中直接定义没有任何修饰符、前缀、后缀的代码块即为构造代码块。我们明白一个类必须至少有一个构造函数，构造函数在生成对象时被调用。构造代码块和构造函数一样同样是在生成一个对象时被调用，那么构造代码在什么时候被调用？如何调用的呢？看如下代码：</p>
+<pre><code>public class Test {
+    /**
+     * 构造代码
+     */
+    {
+        System.out.println(&quot;执行构造代码块...&quot;);
+    }
+
+    /**
+     * 无参构造函数
+     */
+    public Test(){
+        System.out.println(&quot;执行无参构造函数...&quot;);
+    }
+
+    /**
+     * 有参构造函数
+     * @param id  id
+     */
+    public Test(String id){
+        System.out.println(&quot;执行有参构造函数...&quot;);
+    }
+}
+</code></pre><p>上面定义了一个非常简单的类，该类包含无参构造函数、有参构造函数以及构造代码块，同时在上面也提过代码块是没有独立运行的能力，他必须要有一个可以承载的载体，那么编译器会如何来处理构造代码块呢？编译器会将代码块按照他们的顺序(假如有多个代码块)插入到所有的构造函数的最前端，这样就能保证不管调用哪个构造函数都会执行所有的构造代码块。上面代码等同于如下形式：</p>
+<pre><code>public class Test {
+    /**
+     * 无参构造函数
+     */
+    public Test(){
+        System.out.println(&quot;执行构造代码块...&quot;);
+        System.out.println(&quot;执行无参构造函数...&quot;);
+    }
+
+    /**
+     * 有参构造函数
+     * @param id  id
+     */
+    public Test(String id){
+        System.out.println(&quot;执行构造代码块...&quot;);
+        System.out.println(&quot;执行有参构造函数...&quot;);
+    }
+
+}
+</code></pre><p>运行结果</p>
+<pre><code>public static void main(String[] args) {
+        new Test();
+        System.out.println(&quot;----------------&quot;);
+        new Test(&quot;1&quot;);
+    }
+------------
+Output:
+执行构造代码块...
+执行无参构造函数...
+----------------
+执行构造代码块...
+执行有参构造函数...
+</code></pre><p>从上面的运行结果可以看出在 new 一个对象的时候总是先执行构造代码，再执行构造函数，但是有一点需要注意构造代码不是在构造函数之前运行的，它是依托构造函数执行的。正是由于构造代码块有这几个特性，所以它常用于如下场景：</p>
+<p>1、初始化实例变量<br>如果一个类中存在若干个构造函数，这些构造函数都需要对实例变量进行初始化，如果我们直接在构造函数中实例化，必定会产生很多重复代码，繁琐和可读性差。这里我们可以充分利用构造代码块来实现。这是利用编译器会将构造代码块添加到每个构造函数中的特性。</p>
+<p>2、初始化实例环境<br>一个对象必须在适当的场景下才能存在，如果没有适当的场景，则就需要在创建对象时创建此场景。我们可以利用构造代码块来创建此场景，尤其是该场景的创建过程较为复杂。构造代码会在构造函数之前执行。</p>
+<p>上面两个常用场景都充分利用构造代码块的特性，能够很好的解决在实例化对象时构造函数比较难解决的问题，利用构造代码不仅可以减少代码量，同时也是程序的可读性增强了。特别是当一个对象的创建过程比较复杂，需要实现一些复杂逻辑，这个时候如果在构造函数中实现逻辑，这是不推荐的，因为我们提倡构造函数要尽可能的简单易懂，所以我们可以使用构造代码封装这些逻辑实现部分。</p>
+<h2 id="五、-静态代码块、构造代码块、构造函数执行顺序"><a href="#五、-静态代码块、构造代码块、构造函数执行顺序" class="headerlink" title="五、 静态代码块、构造代码块、构造函数执行顺序"></a>五、 静态代码块、构造代码块、构造函数执行顺序</h2><p>从词面上我们就可以看出他们的区别。静态代码块，静态，其作用级别为类，构造代码块、构造函数，构造，其作用级别为对象。</p>
+<p>1、静态代码块，它是随着类的加载而被执行，只要类被加载了就会执行，而且只会加载一次，主要用于给类进行初始化。</p>
+<p>2、构造代码块，每创建一个对象时就会执行一次，且优先于构造函数，主要用于初始化不同对象共性的初始化内容和初始化实例环境。</p>
+<p>3、构造函数，每创建一个对象时就会执行一次。同时构造函数是给特定对象进行初始化，而构造代码是给所有对象进行初始化，作用区域不同。</p>
+<p>通过上面的分析，他们三者的执行顺序应该为：静态代码块 &gt; 构造代码块 &gt; 构造函数。</p>
+<pre><code>public class Test {
+    /**
+     * 静态代码块
+     */
+    static{
+        System.out.println(&quot;执行静态代码块...&quot;);
+    }
+
+    /**
+     * 构造代码块
+     */
+    {
+        System.out.println(&quot;执行构造代码块...&quot;);
+    }
+
+    /**
+     * 无参构造函数
+     */
+    public Test(){
+        System.out.println(&quot;执行无参构造函数...&quot;);
+    }
+
+    /**
+     * 有参构造函数
+     * @param id
+     */
+    public Test(String id){
+        System.out.println(&quot;执行有参构造函数...&quot;);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(&quot;----------------------&quot;);
+        new Test();
+        System.out.println(&quot;----------------------&quot;);
+        new Test(&quot;1&quot;);
+    }
+}
+-----------
+Output:
+执行静态代码块...
+----------------------
+执行构造代码块...
+执行无参构造函数...
+----------------------
+执行构造代码块...
+执行有参构造函数...
+</code></pre><p>原文：<a href="http://wiki.jikexueyuan.com/project/java-enhancement/java-twelve.html" target="_blank" rel="noopener">http://wiki.jikexueyuan.com/project/java-enhancement/java-twelve.html</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+    <div class="article-tag" style="position:absolute;">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>, <a class="tag-link" href="/tags/代码块/">代码块</a>
+    </div>
+
+            
+    
+        <a href="https://ldongxu.github.io/2017/06/05/Java代码块/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://ldongxu.github.io/2017/06/05/Java代码块/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/06/08/Java中System-getProperties-和System-getenv-的区别/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Java中System.getProperties()和System.getenv()的区别
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/06/05/使用序列化实现对象的拷贝/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">使用序列化实现对象的拷贝</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo博客/">Hexo博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 10px;">Ajax</a> <a href="/tags/Gson/" style="font-size: 10px;">Gson</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JMM/" style="font-size: 10px;">JMM</a> <a href="/tags/JSONP/" style="font-size: 10px;">JSONP</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java初始化/" style="font-size: 10px;">Java初始化</a> <a href="/tags/Java并发编程/" style="font-size: 10px;">Java并发编程</a> <a href="/tags/Java队列/" style="font-size: 10px;">Java队列</a> <a href="/tags/Java集合/" style="font-size: 16.67px;">Java集合</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/Linux文件同步/" style="font-size: 10px;">Linux文件同步</a> <a href="/tags/Mongodb/" style="font-size: 13.33px;">Mongodb</a> <a href="/tags/Mongodb备份还原/" style="font-size: 10px;">Mongodb备份还原</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/crontab/" style="font-size: 13.33px;">crontab</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/代码块/" style="font-size: 10px;">代码块</a> <a href="/tags/分布式锁/" style="font-size: 10px;">分布式锁</a> <a href="/tags/单例模式/" style="font-size: 10px;">单例模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+        	<div>
+	            &copy; 2018 
+	            <span class="with-love">
+	 			   <i class="fa fa-heart"></i>
+	 			</span>
+	            刘东旭
+	        </div>
+             
+            <div>
+	            <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	            <span class="site-uv" id="busuanzi_container_site_uv" style="display: inline;">
+	      			<i class="fa fa-user"></i>访客数
+	      			<span class="busuanzi-value" id="busuanzi_value_site_uv">887</span>
+	      		</span>
+	      		<span class="site-pv" id="busuanzi_container_site_pv" style="display: inline;">
+	     			<i class="fa fa-eye"></i>总访问量
+	      			<span class="busuanzi-value" id="busuanzi_value_site_pv">1914</span>
+	      		 </span>
+	      	</div>
+			
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://ldongxu.github.io/2017/06/05/Java代码块/';
+        
+        this.page.identifier = 'Java代码块';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'ldongxu' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>静态工具类获取Spring IoC管理的bean组件 | 刘东旭博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="一般情况我们通过@Resource或者@Autowired或者applicationContext.xml配置来注入所需的bean组件。但是，有的时候我们在一些静态工具类中或者组件里要通过名称去获得spring管理的bean。">
+<meta name="keywords" content="Java,Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静态工具类获取Spring IoC管理的bean组件">
+<meta property="og:url" content="https://ldongxu.github.io/2016/03/25/静态工具类获取Spring-IoC管理的bean组件/index.html">
+<meta property="og:site_name" content="刘东旭博客">
+<meta property="og:description" content="一般情况我们通过@Resource或者@Autowired或者applicationContext.xml配置来注入所需的bean组件。但是，有的时候我们在一些静态工具类中或者组件里要通过名称去获得spring管理的bean。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-06T12:33:08.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="静态工具类获取Spring IoC管理的bean组件">
+<meta name="twitter:description" content="一般情况我们通过@Resource或者@Autowired或者applicationContext.xml配置来注入所需的bean组件。但是，有的时候我们在一些静态工具类中或者组件里要通过名称去获得spring管理的bean。">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+        <meta name="google-site-verification" content="LdaelT6kBjDUrCCsrjBy5SMM7jFVjI3AC0215hMRxfU" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">刘东旭博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/pic_hd.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/pic_hd.jpg" />
+            <h2 id="name">刘东旭</h2>
+            <h3 id="title" style="margin: 1.6em 0em">null</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国 - 北京</span>
+            <a id="follow" target="_blank" href="https://github.com/ldongxu">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                26
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/ldongxu" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="mailto:ldongxu@126.com" target="_blank" title="envelope" class=tooltip>
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-静态工具类获取Spring-IoC管理的bean组件" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            静态工具类获取Spring IoC管理的bean组件
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/03/25/静态工具类获取Spring-IoC管理的bean组件/">
+            <time datetime="2016-03-25T06:05:03.000Z" itemprop="datePublished">2016-03-25</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>一般情况我们通过@Resource或者@Autowired或者applicationContext.xml配置来注入所需的bean组件。<br>但是，有的时候我们在一些静态工具类中或者组件里要通过名称去获得spring管理的bean。<br><a id="more"></a></p>
+<h3 id="1、实现ApplicationContextAware接口"><a href="#1、实现ApplicationContextAware接口" class="headerlink" title="1、实现ApplicationContextAware接口"></a>1、实现ApplicationContextAware接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ldongxu.common;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContextAware;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringUtil</span> <span class="keyword">implements</span> <span class="title">ApplicationContextAware</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ApplicationContext applicationContext = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setApplicationContext</span><span class="params">(ApplicationContext applicationContext)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (SpringUtil.applicationContext == <span class="keyword">null</span>) &#123;</span><br><span class="line">            SpringUtil.applicationContext = applicationContext;</span><br><span class="line">            System.out.println(<span class="string">"========ApplicationContext配置成功,在普通类中可以通过调用SpringUtil.getApplicationContext()获取applicationContext对象,applicationContext="</span> + applicationContext + <span class="string">"========"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ApplicationContext <span class="title">getApplicationContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> applicationContext;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">getBean</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> applicationContext.getBean(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2、在Spring的配置文件中声明添加此工具类"><a href="#2、在Spring的配置文件中声明添加此工具类" class="headerlink" title="2、在Spring的配置文件中声明添加此工具类"></a>2、在Spring的配置文件中声明添加此工具类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean class=&quot;com.ldongxu.common.SpringUtil&quot;&gt;&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：springUtil只能获取到和它定义在同一个上下文里的bean，换句话说，如果想用springUtil获取某个bean，那么这个bean必须和springUtil同在一个上下文中，即声明放在同一个xml文件里。</p>
+</blockquote>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+    <div class="article-tag" style="position:absolute;">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>, <a class="tag-link" href="/tags/Spring/">Spring</a>
+    </div>
+
+            
+    
+        <a href="https://ldongxu.github.io/2016/03/25/静态工具类获取Spring-IoC管理的bean组件/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://ldongxu.github.io/2016/03/25/静态工具类获取Spring-IoC管理的bean组件/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/04/18/Java内存模型/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Java内存模型
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/02/24/解决Ajax跨域访问－JSONP/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">解决Ajax跨域访问－JSONP</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo博客/">Hexo博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 10px;">Ajax</a> <a href="/tags/Gson/" style="font-size: 10px;">Gson</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JMM/" style="font-size: 10px;">JMM</a> <a href="/tags/JSONP/" style="font-size: 10px;">JSONP</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java初始化/" style="font-size: 10px;">Java初始化</a> <a href="/tags/Java并发编程/" style="font-size: 10px;">Java并发编程</a> <a href="/tags/Java队列/" style="font-size: 10px;">Java队列</a> <a href="/tags/Java集合/" style="font-size: 16.67px;">Java集合</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/Linux文件同步/" style="font-size: 10px;">Linux文件同步</a> <a href="/tags/Mongodb/" style="font-size: 13.33px;">Mongodb</a> <a href="/tags/Mongodb备份还原/" style="font-size: 10px;">Mongodb备份还原</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/crontab/" style="font-size: 13.33px;">crontab</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/代码块/" style="font-size: 10px;">代码块</a> <a href="/tags/分布式锁/" style="font-size: 10px;">分布式锁</a> <a href="/tags/单例模式/" style="font-size: 10px;">单例模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+        	<div>
+	            &copy; 2018 
+	            <span class="with-love">
+	 			   <i class="fa fa-heart"></i>
+	 			</span>
+	            刘东旭
+	        </div>
+             
+            <div>
+	            <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	            <span class="site-uv" id="busuanzi_container_site_uv" style="display: inline;">
+	      			<i class="fa fa-user"></i>访客数
+	      			<span class="busuanzi-value" id="busuanzi_value_site_uv">887</span>
+	      		</span>
+	      		<span class="site-pv" id="busuanzi_container_site_pv" style="display: inline;">
+	     			<i class="fa fa-eye"></i>总访问量
+	      			<span class="busuanzi-value" id="busuanzi_value_site_pv">1914</span>
+	      		 </span>
+	      	</div>
+			
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://ldongxu.github.io/2016/03/25/静态工具类获取Spring-IoC管理的bean组件/';
+        
+        this.page.identifier = '静态工具类获取Spring-IoC管理的bean组件';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'ldongxu' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

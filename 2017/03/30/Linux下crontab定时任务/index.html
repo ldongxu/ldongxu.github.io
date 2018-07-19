@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Linux下crontab定时任务 | 刘东旭博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="因为需要在Linux下定时对数据库做备份，所以对Linux的crontab服务做了一些简单的了解。以下内容是在实际操作过程中遇到的一些问题及相关技术翻案，包括crontab简单了解、怎么用vi打开编辑crontab、crontab时间表达式、定时任务输出重定向等问题。">
+<meta name="keywords" content="Linux,crontab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux下crontab定时任务">
+<meta property="og:url" content="https://ldongxu.github.io/2017/03/30/Linux下crontab定时任务/index.html">
+<meta property="og:site_name" content="刘东旭博客">
+<meta property="og:description" content="因为需要在Linux下定时对数据库做备份，所以对Linux的crontab服务做了一些简单的了解。以下内容是在实际操作过程中遇到的一些问题及相关技术翻案，包括crontab简单了解、怎么用vi打开编辑crontab、crontab时间表达式、定时任务输出重定向等问题。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://sfault-image.b0.upaiyun.com/175/110/1751101486-55155eadab949_articlex">
+<meta property="og:updated_time" content="2018-07-06T12:33:08.042Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux下crontab定时任务">
+<meta name="twitter:description" content="因为需要在Linux下定时对数据库做备份，所以对Linux的crontab服务做了一些简单的了解。以下内容是在实际操作过程中遇到的一些问题及相关技术翻案，包括crontab简单了解、怎么用vi打开编辑crontab、crontab时间表达式、定时任务输出重定向等问题。">
+<meta name="twitter:image" content="https://sfault-image.b0.upaiyun.com/175/110/1751101486-55155eadab949_articlex">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+        <meta name="google-site-verification" content="LdaelT6kBjDUrCCsrjBy5SMM7jFVjI3AC0215hMRxfU" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">刘东旭博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/pic_hd.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/pic_hd.jpg" />
+            <h2 id="name">刘东旭</h2>
+            <h3 id="title" style="margin: 1.6em 0em">null</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国 - 北京</span>
+            <a id="follow" target="_blank" href="https://github.com/ldongxu">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                26
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/ldongxu" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="mailto:ldongxu@126.com" target="_blank" title="envelope" class=tooltip>
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Linux下crontab定时任务" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Linux下crontab定时任务
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/03/30/Linux下crontab定时任务/">
+            <time datetime="2017-03-30T10:02:33.000Z" itemprop="datePublished">2017-03-30</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>因为需要在Linux下定时对数据库做备份，所以对Linux的crontab服务做了一些简单的了解。<br>以下内容是在实际操作过程中遇到的一些问题及相关技术翻案，包括crontab简单了解、怎么用vi打开编辑crontab、crontab时间表达式、定时任务输出重定向等问题。<br><a id="more"></a></p>
+<h3 id="Linux下的定时任务设置"><a href="#Linux下的定时任务设置" class="headerlink" title="Linux下的定时任务设置"></a>Linux下的定时任务设置</h3><h4 id="crontab简介"><a href="#crontab简介" class="headerlink" title="crontab简介"></a>crontab简介</h4><p>Linux下的任务调度分为两类，系统任务调度和用户任务调度。<br>系统任务调度：系统周期性所要执行的工作，比如写缓存数据到硬盘、日志清理等。在/etc目录下有一个crontab文件，这个就是系统任务调度的配置文件。<br>/etc/crontab文件包括下面几行：<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># /etc/crontab: system-wide crontab</span><br><span class="line"># Unlike any other crontab you don&apos;t have to run the `crontab&apos;</span><br><span class="line"># command to install the new version when you edit this file</span><br><span class="line"># and files in /etc/cron.d. These files also have username fields,</span><br><span class="line"># that none of the other crontabs do.</span><br><span class="line"></span><br><span class="line">SHELL=/bin/sh</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin</span><br><span class="line">MAILTO=&quot;&quot;</span><br><span class="line">HOME=/</span><br><span class="line"># m h dom mon dow user  command</span><br><span class="line">17 *    * * *   root    cd / &amp;&amp; run-parts --report /etc/cron.hourly</span><br><span class="line">25 6    * * *   root    test -x /usr/sbin/anacron || ( cd / &amp;&amp; run-parts --report /etc/cron.daily )</span><br><span class="line">47 6    * * 7   root    test -x /usr/sbin/anacron || ( cd / &amp;&amp; run-parts --report /etc/cron.weekly )</span><br><span class="line">52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / &amp;&amp; run-parts --report /etc/cron.monthly )</span><br></pre></td></tr></table></figure></p>
+<p>前四行是用来配置crond任务运行的环境变量，第一行SHELL变量指定了系统要使用哪个shell，这里是bash，第二行PATH变量指定了系统执行命令的路径，第三行MAILTO变量指定了crond的任务执行信息将通过电子邮件发送给root用户，如果MAILTO变量的值为空，则表示不发送任务执行信息给用户，第四行的HOME变量指定了在执行命令或者脚本时使用的主目录。</p>
+<p>用户任务调度：用户定期要执行的工作，比如用户数据备份、定时邮件提醒等。用户可以使用 crontab 工具来定制自己的计划任务。所有用户定义的crontab 文件都被保存在 /var/spool/cron目录中。其文件名与用户名一致。</p>
+<p><strong>使用者权限文件：</strong><br>/var/spool/cron：所有用户定义的crontab 文件都被保存在目录中，其文件名与用户名一致。<br>/etc/cron.deny：该文件中所列用户不允许使用crontab命令。<br>/etc/cron.allow：该文件中所列用户允许使用crontab命令，优先于/etc/cron.deny</p>
+<p>设置crontab用vi打开编辑：<br>编辑.profile文件,增加EDITOR=vi;export EDITOR  或  直接在命令行输入 EDITOR=vi;export EDITOR<br>  判断方法：<br>  $ which $EDITOR<br>  $          如果该行显示为空，那么你就需要执行下面的两个语句了。<br>  $ EDITOR=vi<br>  $ export EDITOR</p>
+<h4 id="crontab的时间表达式"><a href="#crontab的时间表达式" class="headerlink" title="crontab的时间表达式"></a>crontab的时间表达式</h4><p>基本格式 :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">*　　*　　*　　*　　*　　command</span><br><span class="line">分　时　日　月　周　命令</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://sfault-image.b0.upaiyun.com/175/110/1751101486-55155eadab949_articlex" alt=""></p>
+<p>几个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1、每分钟执行一次            </span><br><span class="line">*  *  *  *  * </span><br><span class="line"></span><br><span class="line">2、每隔一小时执行一次        </span><br><span class="line"> 00  *  *  *  * or * */1 * * *  (/表示频率)</span><br><span class="line"></span><br><span class="line">3、每小时的15和30分各执行一次 </span><br><span class="line"> 15,45 * * * * （,表示并列）</span><br><span class="line"></span><br><span class="line">4、在每天上午 8- 11时中间每小时 15 ，45分各执行一次</span><br><span class="line"> 15,45 8-11 * * * command （-表示范围）</span><br><span class="line"></span><br><span class="line">5、每个星期一的上午8点到11点的第3和第15分钟执行</span><br><span class="line"> 3,15 8-11 * * 1 command</span><br><span class="line"></span><br><span class="line">6、每隔两天的上午8点到11点的第3和第15分钟执行</span><br><span class="line"> 3,15 8-11 */2 * * command</span><br></pre></td></tr></table></figure></p>
+<h4 id="crontab命令介绍"><a href="#crontab命令介绍" class="headerlink" title="crontab命令介绍"></a>crontab命令介绍</h4><p>查看crontab服务状态：<br>  <code>service cron status</code><br>手动启动crontab服务：<br>  <code>service cron start</code><br>手动停止crontab服务：<br>  <code>service cron stop</code></p>
+<p>使用方式 :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">crontab [-u user] file：file是命令文件的名字,表示将file做为crontab的任务列表文件并载入crontab。如果在命令行中没有指定这个文件，crontab命令将接受标准输入（键盘）上键入的命令，并将它们载入crontab。</span><br><span class="line"></span><br><span class="line">crontab -u [user]：用来设定某个用户的crontab服务，例如，“-u ixdba”表示设定ixdba用户的crontab服务，此参数一般由root用户来运行。</span><br><span class="line"></span><br><span class="line">crontab -e：编辑某个用户的crontab文件内容。如果不指定用户，则表示编辑当前用户的crontab文件。</span><br><span class="line"></span><br><span class="line">crontab -l：显示某个用户的crontab文件内容，如果不指定用户，则表示显示当前用户的crontab文件内容。</span><br><span class="line"></span><br><span class="line">crontab -r：从/var/spool/cron目录中删除某个用户的crontab文件，如果不指定用户，则默认删除当前用户的crontab文件。</span><br><span class="line"></span><br><span class="line">crontab -i：在删除用户的crontab文件时给确认提示。</span><br></pre></td></tr></table></figure></p>
+<p>常用crontab命令：<br>查看当前用户的定时任务：<br>  <code>[root@AY1404010929194851d3Z:~]# crontab -l</code><br>查看指定用户的定时任务：<br>  <code>[root@AY1404010929194851d3Z:~]# crontab -uroot -l</code><br>追加crontab定时任务：<br>  <code>[root@AY1404010929194851d3Z:~]# crontab -e</code></p>
+<p><strong>注</strong>：定时任务结尾加 &gt;/dev/null 2&gt;&amp;1(在调试好脚本程序后，应尽量把DEBUG及命令输出的内容信息屏蔽掉，如果确实需要输出日志，可定向到日志文件里，避免产生系统垃圾。)<br>如：<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@angelT ~]# crontab -l</span><br><span class="line">#backup www to /backup</span><br><span class="line">00 00 * * * /bin/sh /server/scripts/www_bak.sh &gt;/dev/null  2&gt;&amp;1</span><br></pre></td></tr></table></figure></p>
+<p>有关/dev/null的说明：<br><em>/dev/null为特殊的字符设备文件，表示黑洞设备或空设备</em>。<br>>/dev/null 2&gt;&amp;1的作用：<br>如果定时任务规范结尾不加 &gt;/dev/null 2&gt;&amp;1,很容易导致硬盘inode空间被占满，从而系统服务不正常（var/spool/clientmqueue邮件临时队列目录，垃圾文件存放于此，如果是centos 6.4系统，默认不装sendmail服务，所以不会有这个目录。）</p>
+<p>有关重定向的说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;或1&gt;   输出重定向：把前面输出的东西输入到后边的文件中，会删除文件原有内容。</span><br><span class="line">&gt;&gt;或1&gt;&gt;追加重定向：把前面输出的东西追加到后边的文件中，不会删除文件原有内容。</span><br><span class="line">&lt;或&lt;0   输入重定向：输入重定向用于改变命令的输入，指定输入内容，后跟文件名。</span><br><span class="line">&lt;&lt;或&lt;&lt;0输入重定向：后跟字符串，用来表示“输入结束”，也可用ctrl+d来结束输入。</span><br><span class="line">2&gt;       错误重定向：把错误信息输入到后边的文件中，会删除文件原有内容。</span><br><span class="line">2&gt;&gt;     错误追加重定向：把错误信息追加到后边的文件中，不会删除文件原有内容。</span><br><span class="line">标准输入（stdin）：代码为0，使用&lt;或&lt;&lt;。</span><br><span class="line">标准输出（stdout）:代码为1，使用&gt;或&gt;&gt;。正常的输出。</span><br><span class="line">标准错误输出（sederr）：代码为2，使用2&gt;或2&gt;&gt;。</span><br><span class="line">特殊：</span><br><span class="line">2&gt;&amp;1就是把标准错误重定向到标准输出（&gt;&amp;）。</span><br><span class="line">&gt;/dev/null 2&gt;&amp;1 等价于 1&gt;/dev/null  2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+    <div class="article-tag" style="position:absolute;">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Linux/">Linux</a>, <a class="tag-link" href="/tags/crontab/">crontab</a>
+    </div>
+
+            
+    
+        <a href="https://ldongxu.github.io/2017/03/30/Linux下crontab定时任务/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://ldongxu.github.io/2017/03/30/Linux下crontab定时任务/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/04/06/使用MongoDB工具备份和还原-mongodump和mongorestore/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    使用MongoDB工具备份和还原(mongodump和mongorestore)
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/03/29/Linux定时任务定时备份mongodb和删除历史备份shell脚本/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Linux定时任务定时备份mongodb和删除历史备份shell脚本</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo博客/">Hexo博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 10px;">Ajax</a> <a href="/tags/Gson/" style="font-size: 10px;">Gson</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JMM/" style="font-size: 10px;">JMM</a> <a href="/tags/JSONP/" style="font-size: 10px;">JSONP</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java初始化/" style="font-size: 10px;">Java初始化</a> <a href="/tags/Java并发编程/" style="font-size: 10px;">Java并发编程</a> <a href="/tags/Java队列/" style="font-size: 10px;">Java队列</a> <a href="/tags/Java集合/" style="font-size: 16.67px;">Java集合</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/Linux文件同步/" style="font-size: 10px;">Linux文件同步</a> <a href="/tags/Mongodb/" style="font-size: 13.33px;">Mongodb</a> <a href="/tags/Mongodb备份还原/" style="font-size: 10px;">Mongodb备份还原</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/crontab/" style="font-size: 13.33px;">crontab</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/代码块/" style="font-size: 10px;">代码块</a> <a href="/tags/分布式锁/" style="font-size: 10px;">分布式锁</a> <a href="/tags/单例模式/" style="font-size: 10px;">单例模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+        	<div>
+	            &copy; 2018 
+	            <span class="with-love">
+	 			   <i class="fa fa-heart"></i>
+	 			</span>
+	            刘东旭
+	        </div>
+             
+            <div>
+	            <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	            <span class="site-uv" id="busuanzi_container_site_uv" style="display: inline;">
+	      			<i class="fa fa-user"></i>访客数
+	      			<span class="busuanzi-value" id="busuanzi_value_site_uv">887</span>
+	      		</span>
+	      		<span class="site-pv" id="busuanzi_container_site_pv" style="display: inline;">
+	     			<i class="fa fa-eye"></i>总访问量
+	      			<span class="busuanzi-value" id="busuanzi_value_site_pv">1914</span>
+	      		 </span>
+	      	</div>
+			
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://ldongxu.github.io/2017/03/30/Linux下crontab定时任务/';
+        
+        this.page.identifier = 'Linux下crontab定时任务';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'ldongxu' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Linux同步工具：rsync | 刘东旭博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="rsync是一款Linux上的文件远程同步工具。rsync使用所谓的“rsync算法”来使本地和远程两个主机之间的文件达到同步，这个算法只传送两个文件的不同部分，而不是每次都整份传送，因此速度相当快。 rsync是一个功能非常强大的工具，其命令也有很多功能特色选项，我们下面就对它的选项一一进行分析说明。">
+<meta name="keywords" content="Linux,rsync,Linux文件同步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux同步工具：rsync">
+<meta property="og:url" content="https://ldongxu.github.io/2017/04/13/Linux同步工具：rsync/index.html">
+<meta property="og:site_name" content="刘东旭博客">
+<meta property="og:description" content="rsync是一款Linux上的文件远程同步工具。rsync使用所谓的“rsync算法”来使本地和远程两个主机之间的文件达到同步，这个算法只传送两个文件的不同部分，而不是每次都整份传送，因此速度相当快。 rsync是一个功能非常强大的工具，其命令也有很多功能特色选项，我们下面就对它的选项一一进行分析说明。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-06T12:33:08.042Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux同步工具：rsync">
+<meta name="twitter:description" content="rsync是一款Linux上的文件远程同步工具。rsync使用所谓的“rsync算法”来使本地和远程两个主机之间的文件达到同步，这个算法只传送两个文件的不同部分，而不是每次都整份传送，因此速度相当快。 rsync是一个功能非常强大的工具，其命令也有很多功能特色选项，我们下面就对它的选项一一进行分析说明。">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+        <meta name="google-site-verification" content="LdaelT6kBjDUrCCsrjBy5SMM7jFVjI3AC0215hMRxfU" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">刘东旭博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/pic_hd.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/pic_hd.jpg" />
+            <h2 id="name">刘东旭</h2>
+            <h3 id="title" style="margin: 1.6em 0em">null</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国 - 北京</span>
+            <a id="follow" target="_blank" href="https://github.com/ldongxu">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                26
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/ldongxu" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="mailto:ldongxu@126.com" target="_blank" title="envelope" class=tooltip>
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Linux同步工具：rsync" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Linux同步工具：rsync
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/04/13/Linux同步工具：rsync/">
+            <time datetime="2017-04-13T08:11:40.000Z" itemprop="datePublished">2017-04-13</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>rsync是一款Linux上的文件远程同步工具。<br>rsync使用所谓的“rsync算法”来使本地和远程两个主机之间的文件达到同步，这个算法只传送两个文件的不同部分，而不是每次都整份传送，因此速度相当快。 rsync是一个功能非常强大的工具，其命令也有很多功能特色选项，我们下面就对它的选项一一进行分析说明。<br><a id="more"></a></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>一般的Linux系统都自带了这个工具，如果没有的话，可以用下面的命令安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://download.samba.org/pub/rsync/src/rsync-3.1.2.tar.gz</span><br><span class="line">$ tar -xvzf rsync-3.1.2.tar.gz &amp;&amp; cd rsync-3.1.2</span><br><span class="line">$ ./configure &amp;&amp; make &amp;&amp; sudo make install</span><br></pre></td></tr></table></figure></p>
+<h3 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h3><p>假设我们有一个目录/home/ldongxu/backup/mysql需要同步，创建配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo touch /etc/rsyncd.conf</span><br><span class="line">$ sudo vi /etc/rsyncd.conf</span><br></pre></td></tr></table></figure></p>
+<p>加入下面的内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># SYNC守护进程的用户</span><br><span class="line">uid = root</span><br><span class="line"># 运行RSYNC守护进程的组</span><br><span class="line">gid = root</span><br><span class="line"># 不使用chroot</span><br><span class="line">use chroot = no</span><br><span class="line"># 最大连接数是4</span><br><span class="line">max connections = 4</span><br><span class="line"># pid文件存放位置</span><br><span class="line">pid file = /var/run/rsyncd.pid</span><br><span class="line"># 锁文件存放位置</span><br><span class="line">lock file = /var/run/rsync.lock</span><br><span class="line"># 日志文件存放位置</span><br><span class="line">log file = /var/log/rsyncd.log</span><br><span class="line">[mysql]</span><br><span class="line"># 要同步的目录</span><br><span class="line">path = /home/ldongxu/backup/mysql</span><br><span class="line"># 忽略无关的IO错误</span><br><span class="line">ignore errors</span><br><span class="line"># 只读，不能上传</span><br><span class="line">read only = true</span><br><span class="line"># 禁止查看文件列表</span><br><span class="line">list = false</span><br><span class="line"># 允许访问服务的ip</span><br><span class="line"># hosts allow = 192.168.1.200</span><br><span class="line"># 禁止访问服务的ip</span><br><span class="line"># hosts deny = 0.0.0.0/32</span><br><span class="line"># 认证的用户名，系统必须存在的用户，但是密码需要在secrets file 配置，不是系统的密码。</span><br><span class="line">auth users = ldongxu</span><br><span class="line"># 认证用户密码文件，配置auth users的密码</span><br><span class="line">secrets file = /etc/backserver.pas</span><br></pre></td></tr></table></figure></p>
+<p>上面配置文件中的mysql可以自定义，客户端同步的时候要用到。上面的认证用户，必须是系统存在的用户。<br>接下来创建密码文件<code>/etc/backserver.pas</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo touch /etc/backserver.pas</span><br><span class="line">$ sudo chown root:root /etc/backserver.pas</span><br><span class="line">$ sudo chmod 600 /etc/backserver.pas</span><br></pre></td></tr></table></figure></p>
+<p>然后在里面加入<br><code>ldongxu:ldongxu</code><br>每个用户一行，冒号前面是用户名，后面是密码，然后启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo rsync --daemon --config=/etc/rsyncd.conf</span><br></pre></td></tr></table></figure></p>
+<p>这样服务端就算搭建好了，可以把命令加入到开机启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;rsync --daemon --config=/etc/rsyncd.conf&apos; &gt;&gt; /etc/rc.d/rc.local</span><br></pre></td></tr></table></figure></p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>假设我们要把刚刚服务器端的<code>/home/ldongxu/backup/mysql</code>同步下来。<br>先创建密码文件，用于同步时的验证<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ touch ~/rsyncd.secrets</span><br><span class="line">$ chmod 600 ~/rsyncd.secrets</span><br></pre></td></tr></table></figure></p>
+<p>这个文件只要放密码就可以了，在这个例子中，则是放入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldongxu</span><br></pre></td></tr></table></figure></p>
+<p>然后运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rsync -avz --delete --password-file=/xxx/rsyncd.secrets clinyong@your_ip::mysql destination</span><br></pre></td></tr></table></figure></p>
+<p>把server_ip换成自己服务器的ip地址，mysql就是在服务器端的配置文件填写的字段，destination换成本地路径，这样子就能把文件同步下来了。</p>
+<p>把命令加入到crontab，让其每天同步一次，运行crontab -e，在最后一行加入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00 00 * * * rsync -avz --delete --password-file=/etc/rsyncd.secrets ldongxu@server_ip::mysql destination</span><br></pre></td></tr></table></figure></p>
+<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">rsync [OPTION]... SRC DEST </span><br><span class="line">rsync [OPTION]... SRC [USER@]host:DEST </span><br><span class="line">rsync [OPTION]... [USER@]HOST:SRC DEST </span><br><span class="line">rsync [OPTION]... [USER@]HOST::SRC DEST </span><br><span class="line">rsync [OPTION]... SRC [USER@]HOST::DEST </span><br><span class="line">rsync [OPTION]... rsync://[USER@]HOST[:PORT]/SRC [DEST]</span><br></pre></td></tr></table></figure>
+<p>对应于以上六种命令格式，rsync有六种不同的工作模式： </p>
+<ol>
+<li>拷贝本地文件。当SRC和DES路径信息都不包含有单个冒号”:”分隔符时就启动这种工作模式。如：rsync -a /data /backup </li>
+<li>使用一个远程shell程序(如rsh、ssh)来实现将本地机器的内容拷贝到远程机器。当DST路径地址包含单个冒号”:”分隔符时启动该模式。如：rsync -avz *.c foo:src </li>
+<li>使用一个远程shell程序(如rsh、ssh)来实现将远程机器的内容拷贝到本地机器。当SRC地址路径包含单个冒号”:”分隔符时启动该模式。如：rsync -avz foo:src/bar /data </li>
+<li>从远程rsync服务器中拷贝文件到本地机。当SRC路径信息包含”::”分隔符时启动该模式。如：rsync -av <a href="mailto:root@192.168.78.192" target="_blank" rel="noopener">root@192.168.78.192</a>::www /databack </li>
+<li>从本地机器拷贝文件到远程rsync服务器中。当DST路径信息包含”::”分隔符时启动该模式。如：rsync -av /databack <a href="mailto:root@192.168.78.192" target="_blank" rel="noopener">root@192.168.78.192</a>::www </li>
+<li>列远程机的文件列表。这类似于rsync传输，不过只要在命令中省略掉本地机信息即可。如：rsync -v rsync://192.168.78.192/www </li>
+</ol>
+<h4 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">-v, --verbose 详细模式输出。 </span><br><span class="line">-q, --quiet 精简输出模式。 </span><br><span class="line">-c, --checksum 打开校验开关，强制对文件传输进行校验。 </span><br><span class="line">-a, --archive 归档模式，表示以递归方式传输文件，并保持所有文件属性，等于-rlptgoD。 </span><br><span class="line">-r, --recursive 对子目录以递归模式处理。 </span><br><span class="line">-R, --relative 使用相对路径信息。 </span><br><span class="line">-b, --backup 创建备份，也就是对于目的已经存在有同样的文件名时，将老的文件重新命名为~filename。可以使用--suffix选项来指定不同的备份文件前缀。</span><br><span class="line">--backup-dir 将备份文件(如~filename)存放在在目录下。 -suffix=SUFFIX 定义备份文件前缀。 </span><br><span class="line">-u, --update 仅仅进行更新，也就是跳过所有已经存在于DST，并且文件时间晚于要备份的文件，不覆盖更新的文件。 </span><br><span class="line">-l, --links 保留软链结。 </span><br><span class="line">-L, --copy-links 想对待常规文件一样处理软链结。 </span><br><span class="line">--copy-unsafe-links 仅仅拷贝指向SRC路径目录树以外的链结。 </span><br><span class="line">--safe-links 忽略指向SRC路径目录树以外的链结。 </span><br><span class="line">-H, --hard-links 保留硬链结。 </span><br><span class="line">-p, --perms 保持文件权限。 </span><br><span class="line">-o, --owner 保持文件属主信息。 </span><br><span class="line">-g, --group 保持文件属组信息。 </span><br><span class="line">-D, --devices 保持设备文件信息。 </span><br><span class="line">-t, --times 保持文件时间信息。 </span><br><span class="line">-S, --sparse 对稀疏文件进行特殊处理以节省DST的空间。 </span><br><span class="line">-n, --dry-run现实哪些文件将被传输。 </span><br><span class="line">-w, --whole-file 拷贝文件，不进行增量检测。 </span><br><span class="line">-x, --one-file-system 不要跨越文件系统边界。 </span><br><span class="line">-B, --block-size=SIZE 检验算法使用的块尺寸，默认是700字节。 </span><br><span class="line">-e, --rsh=command 指定使用rsh、ssh方式进行数据同步。 </span><br><span class="line">--rsync-path=PATH 指定远程服务器上的rsync命令所在路径信息。 </span><br><span class="line">-C, --cvs-exclude 使用和CVS一样的方法自动忽略文件，用来排除那些不希望传输的文件。 </span><br><span class="line">--existing 仅仅更新那些已经存在于DST的文件，而不备份那些新创建的文件。 </span><br><span class="line">--delete 删除那些DST中SRC没有的文件。 </span><br><span class="line">--delete-excluded 同样删除接收端那些被该选项指定排除的文件。 </span><br><span class="line">--delete-after 传输结束以后再删除。 </span><br><span class="line">--ignore-errors 及时出现IO错误也进行删除。 </span><br><span class="line">--max-delete=NUM 最多删除NUM个文件。 </span><br><span class="line">--partial 保留那些因故没有完全传输的文件，以是加快随后的再次传输。 </span><br><span class="line">--force 强制删除目录，即使不为空。 </span><br><span class="line">--numeric-ids 不将数字的用户和组id匹配为用户名和组名。 </span><br><span class="line">--timeout=time ip超时时间，单位为秒。 </span><br><span class="line">-I, --ignore-times 不跳过那些有同样的时间和长度的文件。 </span><br><span class="line">--size-only 当决定是否要备份文件时，仅仅察看文件大小而不考虑文件时间。 </span><br><span class="line">--modify-window=NUM 决定文件是否时间相同时使用的时间戳窗口，默认为0。 </span><br><span class="line">-T --temp-dir=DIR 在DIR中创建临时文件。</span><br><span class="line">--compare-dest=DIR 同样比较DIR中的文件来决定是否需要备份。 </span><br><span class="line">-P 等同于 --partial。 </span><br><span class="line">--progress 显示备份过程。 </span><br><span class="line">-z, --compress 对备份的文件在传输时进行压缩处理。 </span><br><span class="line">--exclude=PATTERN 指定排除不需要传输的文件模式。 </span><br><span class="line">--include=PATTERN 指定不排除而需要传输的文件模式。 </span><br><span class="line">--exclude-from=FILE 排除FILE中指定模式的文件。 </span><br><span class="line">--include-from=FILE 不排除FILE指定模式匹配的文件。 </span><br><span class="line">--version 打印版本信息。 </span><br><span class="line">--address 绑定到特定的地址。 </span><br><span class="line">--config=FILE 指定其他的配置文件，不使用默认的rsyncd.conf文件。 </span><br><span class="line">--port=PORT 指定其他的rsync服务端口。 </span><br><span class="line">--blocking-io 对远程shell使用阻塞IO。 </span><br><span class="line">-stats 给出某些文件的传输状态。 </span><br><span class="line">--log-format=formAT 指定日志文件格式。 </span><br><span class="line">--password-file=FILE 从FILE中得到密码。 </span><br><span class="line">--bwlimit=KBPS 限制I/O带宽，KBytes per second。 </span><br><span class="line">-h, --help 显示帮助信息。</span><br></pre></td></tr></table></figure>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+    <div class="article-tag" style="position:absolute;">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Linux/">Linux</a>, <a class="tag-link" href="/tags/Linux文件同步/">Linux文件同步</a>, <a class="tag-link" href="/tags/rsync/">rsync</a>
+    </div>
+
+            
+    
+        <a href="https://ldongxu.github.io/2017/04/13/Linux同步工具：rsync/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://ldongxu.github.io/2017/04/13/Linux同步工具：rsync/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/04/25/用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/04/06/使用MongoDB工具备份和还原-mongodump和mongorestore/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">使用MongoDB工具备份和还原(mongodump和mongorestore)</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo博客/">Hexo博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 10px;">Ajax</a> <a href="/tags/Gson/" style="font-size: 10px;">Gson</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JMM/" style="font-size: 10px;">JMM</a> <a href="/tags/JSONP/" style="font-size: 10px;">JSONP</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java初始化/" style="font-size: 10px;">Java初始化</a> <a href="/tags/Java并发编程/" style="font-size: 10px;">Java并发编程</a> <a href="/tags/Java队列/" style="font-size: 10px;">Java队列</a> <a href="/tags/Java集合/" style="font-size: 16.67px;">Java集合</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/Linux文件同步/" style="font-size: 10px;">Linux文件同步</a> <a href="/tags/Mongodb/" style="font-size: 13.33px;">Mongodb</a> <a href="/tags/Mongodb备份还原/" style="font-size: 10px;">Mongodb备份还原</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/crontab/" style="font-size: 13.33px;">crontab</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/代码块/" style="font-size: 10px;">代码块</a> <a href="/tags/分布式锁/" style="font-size: 10px;">分布式锁</a> <a href="/tags/单例模式/" style="font-size: 10px;">单例模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+        	<div>
+	            &copy; 2018 
+	            <span class="with-love">
+	 			   <i class="fa fa-heart"></i>
+	 			</span>
+	            刘东旭
+	        </div>
+             
+            <div>
+	            <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	            <span class="site-uv" id="busuanzi_container_site_uv" style="display: inline;">
+	      			<i class="fa fa-user"></i>访客数
+	      			<span class="busuanzi-value" id="busuanzi_value_site_uv">887</span>
+	      		</span>
+	      		<span class="site-pv" id="busuanzi_container_site_pv" style="display: inline;">
+	     			<i class="fa fa-eye"></i>总访问量
+	      			<span class="busuanzi-value" id="busuanzi_value_site_pv">1914</span>
+	      		 </span>
+	      	</div>
+			
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://ldongxu.github.io/2017/04/13/Linux同步工具：rsync/';
+        
+        this.page.identifier = 'Linux同步工具：rsync';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'ldongxu' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

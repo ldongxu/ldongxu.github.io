@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Java初始化 | 刘东旭博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="理解Java初始化过程及顺序能更清楚的知道代码的执行顺序，特别是在需要特定的执行顺序的时候就显的更为关键。">
+<meta name="keywords" content="Java,Java初始化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java初始化">
+<meta property="og:url" content="https://ldongxu.github.io/2017/05/24/Java初始化/index.html">
+<meta property="og:site_name" content="刘东旭博客">
+<meta property="og:description" content="理解Java初始化过程及顺序能更清楚的知道代码的执行顺序，特别是在需要特定的执行顺序的时候就显的更为关键。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-06T12:33:08.041Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java初始化">
+<meta name="twitter:description" content="理解Java初始化过程及顺序能更清楚的知道代码的执行顺序，特别是在需要特定的执行顺序的时候就显的更为关键。">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+        <meta name="google-site-verification" content="LdaelT6kBjDUrCCsrjBy5SMM7jFVjI3AC0215hMRxfU" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">刘东旭博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/pic_hd.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/pic_hd.jpg" />
+            <h2 id="name">刘东旭</h2>
+            <h3 id="title" style="margin: 1.6em 0em">null</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国 - 北京</span>
+            <a id="follow" target="_blank" href="https://github.com/ldongxu">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                26
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/ldongxu" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="mailto:ldongxu@126.com" target="_blank" title="envelope" class=tooltip>
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Java初始化" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Java初始化
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/05/24/Java初始化/">
+            <time datetime="2017-05-24T02:46:51.000Z" itemprop="datePublished">2017-05-24</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>理解Java初始化过程及顺序能更清楚的知道代码的执行顺序，特别是在需要特定的执行顺序的时候就显的更为关键。<br><a id="more"></a><br>Java的初始化可以分为两个部分：</p>
+<ul>
+<li>类的初始化</li>
+<li>对象的创建</li>
+</ul>
+<h3 id="类的初始化"><a href="#类的初始化" class="headerlink" title="类的初始化"></a>类的初始化</h3><h4 id="一、什么是类的初始化"><a href="#一、什么是类的初始化" class="headerlink" title="一、什么是类的初始化"></a>一、什么是类的初始化</h4><p> 一个类(class)要被使用必须经过装载，连接，初始化这样的过程。</p>
+<ul>
+<li>在装载阶段，类装载器会把编译形成的class文件载入内存，创建类相关的Class对象，这个Class对象封装了我们要使用的类的类型信息。</li>
+<li>连接阶段又可以分为三个子步骤：验证、准备和解析。<ul>
+<li>验证就是要确保java类型数据格式的正确性，并适于JVM使用。</li>
+<li>准备阶段，JVM为静态变量分配内存空间，并设置默认值，注意，这里是设置默认值，比如说int型的变量会被赋予默认值0。在这个阶段，JVM可能还会为一些数据结构分配内存，目的是提高运行程序的性能，比如说方法表。</li>
+<li>解析过程就是在类型的常量池中寻找类、接口、字段和方法的符号引用，把这些符号引用替换成直接引用。这个阶段可以被推迟到初始化之后，当程序运行的过程中真正使用某个符号引用的时候 再去解析它。</li>
+</ul>
+</li>
+<li>初始化：<br>类的初始化，是指初始化static静态变量和执行static静态代码块。<br>初始化接口，是指初始化定义在该接口中的filed。</li>
+</ul>
+<h4 id="二、类的初始化条件"><a href="#二、类的初始化条件" class="headerlink" title="二、类的初始化条件"></a>二、类的初始化条件</h4><p>类会在首次被“主动使用”时执行初始化，以下情况第一次发生之前类会被初始化：</p>
+<ol>
+<li>创建类的实例；</li>
+<li>调用类的静态方法；</li>
+<li>调用类的静态变量，并且该变量不是一个常变量；</li>
+<li>为类的静态字段赋值；</li>
+<li>在顶层类中执行assert语句；（？）</li>
+<li>调用类Class及包java.lang.reflect中的某些反射方法；</li>
+</ol>
+<blockquote>
+<p>JLS严格的说明：在任何其他的情况下，都不会对类或接口进行初始化。</p>
+</blockquote>
+<h4 id="三、类的初始化规则"><a href="#三、类的初始化规则" class="headerlink" title="三、类的初始化规则"></a>三、类的初始化规则</h4><ol>
+<li>类初始化时，该类的父类将首先被初始化，此过程一直递归到 java.lang.Object为止。但是父类实现的接口并不会被初始化。</li>
+<li>接口初始化时，只会初始化该接口本身，并不会初始化它的父接口。</li>
+<li>如果类的初始化是由于访问静态域而触发，那么只有真正定义该静态域的类才被初始化，而不会触发超类的初始化或者子类的初始化即使静态域被子类或子接口或者它的实现类所引用。</li>
+<li>如果一个静态变量是编译时常量，则对它的引用不会引起定义它的类的初始化。</li>
+<li>初始化类是指初始化static静态变量和执行static静态代码块，所以只会进行一次。<br>初始化接口也只会进行一次。</li>
+</ol>
+<h3 id="对象创建过程中的Java初始化"><a href="#对象创建过程中的Java初始化" class="headerlink" title="对象创建过程中的Java初始化"></a>对象创建过程中的Java初始化</h3><h4 id="一-对象的创建过程"><a href="#一-对象的创建过程" class="headerlink" title="一. 对象的创建过程"></a>一. 对象的创建过程</h4><blockquote>
+<p>假设有个名为Dog的类：</p>
+</blockquote>
+<blockquote>
+<ol>
+<li>当首次创建类型为Dog的对象时，或者Dog类的静态方法/静态域首次被访问时，java解释器必须查找类路径，以定位Dog.class文件。</li>
+<li>然后载入Dog.class（这将创建一个Class对象），有关静态初始化的所有动作都会执行。因此，静态初始化只在class对象首次加载的时候进行一次。</li>
+<li>当用new Dog()创建对象的时候，首先将在堆上为Dog对象分配足够的存储空间。</li>
+<li>这块存储空间会被清零，这就自动地将Dog对象中的所有基本类型数据都设置成了默认值（对数字来说就是0，对布尔型与字符型也相同），而引用则被设置成了null。</li>
+<li>执行所有出现于字段定义处的初始化动作。</li>
+<li>执行构造器。<br>—《Thinking in java》</li>
+</ol>
+</blockquote>
+<h4 id="二-对象创建过程中初始化顺序"><a href="#二-对象创建过程中初始化顺序" class="headerlink" title="二. 对象创建过程中初始化顺序"></a>二. 对象创建过程中初始化顺序</h4><p>父静态成员&gt;子静态成员&gt;父普通成员初始化&gt;父构造&gt;子普通成员初始化&gt;子构造.<br>( 静态初始化块以静态变量对待)</p>
+<h4 id="三-对象创建过程的说明"><a href="#三-对象创建过程的说明" class="headerlink" title="三. 对象创建过程的说明"></a>三. 对象创建过程的说明</h4><ol>
+<li>静态域的初始化是在类的初始化期间，非静态域的初始化时在类的实例创建期间。这意味这静态域初始化在非静态域之前。</li>
+<li>非静态域通过构造器初始化，子类在做任何初始化之前构造器会隐含地调用父类的构造器，这保证了父类非静态实例变量初始化早于子类。</li>
+<li>调用Class的类成员变量(也就是静态变量)时，构造函数和成员变量不会执行。</li>
+<li>在类的内部，变量定义的先后顺序决定了初始化的顺序;<br>即使变量定义散布于方法定义之间，它们仍会在任何方法（包括构造器）被调用之前得到初始化。</li>
+<li>多态情况下的初始化与继承情况下的初始化是一样的，因为都是创建的子类的实例。</li>
+<li>程序的执行过程，即Java虚拟机执行Test类的静态方法main，这也会引起Test 类的初始化。（理解面向对象而非面向过程）</li>
+</ol>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+    <div class="article-tag" style="position:absolute;">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>, <a class="tag-link" href="/tags/Java初始化/">Java初始化</a>
+    </div>
+
+            
+    
+        <a href="https://ldongxu.github.io/2017/05/24/Java初始化/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://ldongxu.github.io/2017/05/24/Java初始化/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/05/26/Java中类与对象的比较及hashCode和equals方法详解/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Java中类与对象的比较及hashCode和equals方法详解
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/04/25/用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo博客/">Hexo博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 10px;">Ajax</a> <a href="/tags/Gson/" style="font-size: 10px;">Gson</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JMM/" style="font-size: 10px;">JMM</a> <a href="/tags/JSONP/" style="font-size: 10px;">JSONP</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java初始化/" style="font-size: 10px;">Java初始化</a> <a href="/tags/Java并发编程/" style="font-size: 10px;">Java并发编程</a> <a href="/tags/Java队列/" style="font-size: 10px;">Java队列</a> <a href="/tags/Java集合/" style="font-size: 16.67px;">Java集合</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/Linux文件同步/" style="font-size: 10px;">Linux文件同步</a> <a href="/tags/Mongodb/" style="font-size: 13.33px;">Mongodb</a> <a href="/tags/Mongodb备份还原/" style="font-size: 10px;">Mongodb备份还原</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/crontab/" style="font-size: 13.33px;">crontab</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/代码块/" style="font-size: 10px;">代码块</a> <a href="/tags/分布式锁/" style="font-size: 10px;">分布式锁</a> <a href="/tags/单例模式/" style="font-size: 10px;">单例模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+        	<div>
+	            &copy; 2018 
+	            <span class="with-love">
+	 			   <i class="fa fa-heart"></i>
+	 			</span>
+	            刘东旭
+	        </div>
+             
+            <div>
+	            <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	            <span class="site-uv" id="busuanzi_container_site_uv" style="display: inline;">
+	      			<i class="fa fa-user"></i>访客数
+	      			<span class="busuanzi-value" id="busuanzi_value_site_uv">887</span>
+	      		</span>
+	      		<span class="site-pv" id="busuanzi_container_site_pv" style="display: inline;">
+	     			<i class="fa fa-eye"></i>总访问量
+	      			<span class="busuanzi-value" id="busuanzi_value_site_pv">1914</span>
+	      		 </span>
+	      	</div>
+			
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://ldongxu.github.io/2017/05/24/Java初始化/';
+        
+        this.page.identifier = 'Java初始化';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'ldongxu' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

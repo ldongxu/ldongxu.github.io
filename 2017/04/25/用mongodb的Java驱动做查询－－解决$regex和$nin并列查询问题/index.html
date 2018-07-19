@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题 | 刘东旭博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="用mongodb的Java驱动而非Spring-data-mongodb的封装，以db.runCommand方式做查询。">
+<meta name="keywords" content="Java,Mongodb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题">
+<meta property="og:url" content="https://ldongxu.github.io/2017/04/25/用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题/index.html">
+<meta property="og:site_name" content="刘东旭博客">
+<meta property="og:description" content="用mongodb的Java驱动而非Spring-data-mongodb的封装，以db.runCommand方式做查询。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-06T12:33:08.043Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题">
+<meta name="twitter:description" content="用mongodb的Java驱动而非Spring-data-mongodb的封装，以db.runCommand方式做查询。">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+        <meta name="google-site-verification" content="LdaelT6kBjDUrCCsrjBy5SMM7jFVjI3AC0215hMRxfU" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">刘东旭博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/pic_hd.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/pic_hd.jpg" />
+            <h2 id="name">刘东旭</h2>
+            <h3 id="title" style="margin: 1.6em 0em">null</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国 - 北京</span>
+            <a id="follow" target="_blank" href="https://github.com/ldongxu">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                26
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/ldongxu" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="mailto:ldongxu@126.com" target="_blank" title="envelope" class=tooltip>
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/04/25/用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题/">
+            <time datetime="2017-04-25T13:53:24.000Z" itemprop="datePublished">2017-04-25</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Mongodb/">Mongodb</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>用mongodb的Java驱动而非Spring-data-mongodb的封装，以db.runCommand方式做查询。<br><a id="more"></a><br>开发中遇到一个需求是利用mongodb模糊查询查询除已选中的标签外的其它标签，比如：标签库中有‘Java，Javascript，Jade，Core Java，Node.js，Python，JavaEE’，已选中的标签有‘Java，Jade’，现在输入‘ja’需要查出包含‘ja’(不区分大小写)的标签并且排除已选中的‘Java，Jade’。</p>
+<h3 id="用Spring-data-mongodb做-regex和-nin模糊查询时的问题"><a href="#用Spring-data-mongodb做-regex和-nin模糊查询时的问题" class="headerlink" title="用Spring-data-mongodb做$regex和$nin模糊查询时的问题"></a>用Spring-data-mongodb做$regex和$nin模糊查询时的问题</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ldongxu.dao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.ldongxu.domain.Skill;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.mongodb.core.query.Criteria;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.mongodb.core.query.Query;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Repository;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.Pattern;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SkillDao</span> <span class="keyword">extends</span> <span class="title">BaseDao</span> </span>&#123;</span><br><span class="line"> 	<span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">protected</span> MongoTemplate mongoTemplate;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> List&lt;Skill&gt; <span class="title">findByRegex</span><span class="params">(String keyWord, List&lt;String&gt; existTags, Integer limit)</span></span>&#123;</span><br><span class="line">        Pattern pattern = Pattern.compile(<span class="string">"^.*"</span> + keyWord + <span class="string">".*$"</span>, Pattern.CASE_INSENSITIVE);<span class="comment">//js正则忽略大小写</span></span><br><span class="line">        Criteria criteria = Criteria.where(<span class="string">"skillTag"</span>).regex(pattern);</span><br><span class="line">        <span class="keyword">if</span> (existTags != <span class="keyword">null</span> &amp;&amp; !existTags.isEmpty())&#123;</span><br><span class="line">            criteria.nin(existTags);</span><br><span class="line">        &#125;</span><br><span class="line">        Query query = Query.query(criteria);</span><br><span class="line">        query.limit(limit);</span><br><span class="line">        <span class="keyword">return</span> mongoTemplate.find(query,Skill.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>利用这种方式得出的mongodb查询语句是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">db.skill.find(&#123; &quot;skillTag&quot; : &#123; &quot;$regex&quot; : &quot;^.*ja.*$&quot; , &quot;$options&quot; : &quot;i&quot;&#125; , &quot;$nin&quot; : [ &quot;Jade&quot; , &quot;Java&quot;]&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;skillTag&quot;: &#123;</span><br><span class="line">        &quot;$regex&quot;: &quot;^.*ja.*$&quot;, </span><br><span class="line">        &quot;$options&quot;: &quot;i&quot;</span><br><span class="line">    &#125;, </span><br><span class="line">    &quot;$nin&quot;: [</span><br><span class="line">        &quot;Jade&quot;, </span><br><span class="line">        &quot;Java&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>而且执行是报如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Error: error: &#123;</span><br><span class="line">	&quot;$err&quot; : &quot;Can&apos;t canonicalize query: BadValue unknown top level operator: $nin&quot;,</span><br><span class="line">	&quot;code&quot; : 17287</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么问题来了，$regex和$nin不能并列做查询条件么？</p>
+<h3 id="mongodb的Java驱动做db-runCommand查询"><a href="#mongodb的Java驱动做db-runCommand查询" class="headerlink" title="mongodb的Java驱动做db.runCommand查询"></a>mongodb的Java驱动做db.runCommand查询</h3><p>在mongodb官方文档中找到一段话：</p>
+<blockquote>
+<p>To include a regular expression in a comma-separated list of query conditions for the field, use the $regex operator. For example:（为了字段在以逗号分隔的查询条件列表中包含正则表达式，可以使用$regex运算符。例如：）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123; name: &#123; $regex: /acme.*corp/i, $nin: [ &apos;acmeblahcorp&apos; ] &#125; &#125;</span><br><span class="line">&#123; name: &#123; $regex: /acme.*corp/, $options: &apos;i&apos;, $nin: [ &apos;acmeblahcorp&apos; ] &#125; &#125;</span><br><span class="line">&#123; name: &#123; $regex: &apos;acme.*corp&apos;, $options: &apos;i&apos;, $nin: [ &apos;acmeblahcorp&apos; ] &#125; &#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>由此，需求中的mongodb查询语句应该是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.skill.find(&#123; &quot;skillTag&quot; : &#123; &quot;$regex&quot; : &quot;^.*ja.*$&quot; , &quot;$options&quot; : &quot;i&quot; , &quot;$nin&quot; : [ &quot;Jade&quot; , &quot;Java&quot;]&#125;&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="db-runCommand-的方式一："><a href="#db-runCommand-的方式一：" class="headerlink" title="db.runCommand()的方式一："></a>db.runCommand()的方式一：</h4><p>利用Spring-data-mongodbAPI始终是组合不到这样的查询语句，所以选择用mongodb的Java驱动以db.runCommand()的方式实现，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Skill&gt; findByRegex(String keyWord, List&lt;String&gt; existTags, Integer limit) &#123;</span><br><span class="line">        String collectionName = mongoTemplate.getCollectionName(Skill.class);</span><br><span class="line">        DBObject filter = new BasicDBObject();</span><br><span class="line">        DBObject condition = new BasicDBObject();</span><br><span class="line">        Pattern pattern = Pattern.compile(&quot;^.*&quot; + keyWord + &quot;.*$&quot;, Pattern.CASE_INSENSITIVE);</span><br><span class="line">        condition.put(&quot;$regex&quot;,pattern);</span><br><span class="line">        if (existTags != null &amp;&amp; existTags.size() &gt; 0) &#123;</span><br><span class="line">            condition.put(&quot;$nin&quot;,existTags);</span><br><span class="line">        &#125;</span><br><span class="line">        filter.put(&quot;skillTag&quot;,condition);</span><br><span class="line">        DBCollection dbCollection = mongoTemplate.getCollection(collectionName);</span><br><span class="line">        Cursor cursor = dbCollection.find(filter).limit(limit);</span><br><span class="line">        List&lt;Skill&gt; skillList = new ArrayList&lt;&gt;();</span><br><span class="line">        while (cursor.hasNext())&#123;</span><br><span class="line">            DBObject object = cursor.next();</span><br><span class="line">            Skill skill = new Skill();</span><br><span class="line">            skill.set_id(object.get(&quot;_id&quot;).toString());</span><br><span class="line">            skill.setSkillTag(object.get(&quot;skillTag&quot;).toString());</span><br><span class="line">            skill.setAddTime((Date) object.get(&quot;addTime&quot;));</span><br><span class="line">            skill.setStatus(Byte.valueOf(object.get(&quot;status&quot;).toString()));</span><br><span class="line">            skillList.add(skill);</span><br><span class="line">        &#125;</span><br><span class="line">        return skillList;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="db-runCommand-的方式二："><a href="#db-runCommand-的方式二：" class="headerlink" title="db.runCommand()的方式二："></a>db.runCommand()的方式二：</h4><p>也可以按mongodb的find原生定义命令进行查询。<br>mongodb官方文档中对find命令的定义如下：</p>
+<blockquote>
+<p>find<br><em>New in version 3.2.</em><br>Executes a query and returns the first batch of results and the cursor id, from which the client can construct a cursor.<br>The <strong>find</strong> command has the following form:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   &quot;find&quot;: &lt;string&gt;,</span><br><span class="line">   &quot;filter&quot;: &lt;document&gt;,</span><br><span class="line">   &quot;sort&quot;: &lt;document&gt;,</span><br><span class="line">   &quot;projection&quot;: &lt;document&gt;,</span><br><span class="line">   &quot;hint&quot;: &lt;document or string&gt;,</span><br><span class="line">   &quot;skip&quot;: &lt;int&gt;,</span><br><span class="line">   &quot;limit&quot;: &lt;int&gt;,</span><br><span class="line">   &quot;batchSize&quot;: &lt;int&gt;,</span><br><span class="line">   &quot;singleBatch&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;comment&quot;: &lt;string&gt;,</span><br><span class="line">   &quot;maxScan&quot;: &lt;int&gt;,</span><br><span class="line">   &quot;maxTimeMS&quot;: &lt;int&gt;,</span><br><span class="line">   &quot;readConcern&quot;: &lt;document&gt;,</span><br><span class="line">   &quot;max&quot;: &lt;document&gt;,</span><br><span class="line">   &quot;min&quot;: &lt;document&gt;,</span><br><span class="line">   &quot;returnKey&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;showRecordId&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;snapshot&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;tailable&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;oplogReplay&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;noCursorTimeout&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;awaitData&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;allowPartialResults&quot;: &lt;bool&gt;,</span><br><span class="line">   &quot;collation&quot;: &lt;document&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>详细参考：<a href="https://docs.mongodb.com/manual/reference/command/find/" target="_blank" rel="noopener">https://docs.mongodb.com/manual/reference/command/find/</a><br>mongodb的Java驱动db.runCommand()的方式也可以写成：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Skill&gt; findByRegex(String keyWord, List&lt;String&gt; existTags, Integer limit) &#123;</span><br><span class="line">        String collectionName = mongoTemplate.getCollectionName(Skill.class);</span><br><span class="line">        DBObject command = new BasicDBObject();</span><br><span class="line">        command.put(&quot;find&quot;,collectionName);</span><br><span class="line">        DBObject filter = new BasicDBObject();</span><br><span class="line">        DBObject condition = new BasicDBObject();</span><br><span class="line">        Pattern pattern = Pattern.compile(&quot;^.*&quot; + keyWord + &quot;.*$&quot;, Pattern.CASE_INSENSITIVE);</span><br><span class="line">        condition.put(&quot;$regex&quot;,pattern);</span><br><span class="line">        if (existTags != null &amp;&amp; existTags.size() &gt; 0) &#123;</span><br><span class="line">            condition.put(&quot;$nin&quot;,existTags);</span><br><span class="line">        &#125;</span><br><span class="line">        filter.put(&quot;skillTag&quot;,condition);</span><br><span class="line">        command.put(&quot;filter&quot;,filter);</span><br><span class="line">        command.put(&quot;limit&quot;,limit);</span><br><span class="line">        DBCollection dbCollection = mongoTemplate.getCollection(collectionName);</span><br><span class="line">        CommandResult commandResult = dbCollection.getDB().command(command);</span><br><span class="line">        List&lt;Skill&gt; skillList = new ArrayList&lt;&gt;();</span><br><span class="line">        DBObject r = (DBObject) commandResult.get(&quot;cursor&quot;);</span><br><span class="line">        BasicDBList dbObjectList = (BasicDBList) r.get(&quot;firstBatch&quot;);</span><br><span class="line">        Iterator&lt;Object&gt; iterator = dbObjectList.iterator();</span><br><span class="line">        while (iterator.hasNext())&#123;</span><br><span class="line">           DBObject object = (DBObject) iterator.next();</span><br><span class="line">            Skill skill = new Skill();</span><br><span class="line">            skill.set_id(object.get(&quot;_id&quot;).toString());</span><br><span class="line">            skill.setSkillTag(object.get(&quot;skillTag&quot;).toString());</span><br><span class="line">            skill.setAddTime((Date) object.get(&quot;addTime&quot;));</span><br><span class="line">            skill.setStatus(Byte.valueOf(object.get(&quot;status&quot;).toString()));</span><br><span class="line">            skillList.add(skill);</span><br><span class="line">        &#125;</span><br><span class="line">        return skillList;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>产生的<strong>find</strong> command格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123; &quot;find&quot; : &quot;skill&quot; , &quot;filter&quot; : &#123; &quot;skillTag&quot; : &#123; &quot;$regex&quot; : &#123; &quot;$regex&quot; : &quot;^.*ja.*$&quot; , &quot;$options&quot; : &quot;i&quot;&#125; , &quot;$nin&quot; : [ &quot;Jade&quot; , &quot;Java&quot;]&#125;&#125; , &quot;limit&quot; : 6&#125;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;find&quot;: &quot;skill&quot;, </span><br><span class="line">    &quot;filter&quot;: &#123;</span><br><span class="line">        &quot;skillTag&quot;: &#123;</span><br><span class="line">            &quot;$regex&quot;: &#123;</span><br><span class="line">                &quot;$regex&quot;: &quot;^.*ja.*$&quot;, </span><br><span class="line">                &quot;$options&quot;: &quot;i&quot;</span><br><span class="line">            &#125;, </span><br><span class="line">            &quot;$nin&quot;: [</span><br><span class="line">                &quot;Jade&quot;, </span><br><span class="line">                &quot;Java&quot;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, </span><br><span class="line">    &quot;limit&quot;: 6</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+    <div class="article-tag" style="position:absolute;">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>, <a class="tag-link" href="/tags/Mongodb/">Mongodb</a>
+    </div>
+
+            
+    
+        <a href="https://ldongxu.github.io/2017/04/25/用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://ldongxu.github.io/2017/04/25/用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/05/24/Java初始化/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Java初始化
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/04/13/Linux同步工具：rsync/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Linux同步工具：rsync</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo博客/">Hexo博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 10px;">Ajax</a> <a href="/tags/Gson/" style="font-size: 10px;">Gson</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JMM/" style="font-size: 10px;">JMM</a> <a href="/tags/JSONP/" style="font-size: 10px;">JSONP</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java初始化/" style="font-size: 10px;">Java初始化</a> <a href="/tags/Java并发编程/" style="font-size: 10px;">Java并发编程</a> <a href="/tags/Java队列/" style="font-size: 10px;">Java队列</a> <a href="/tags/Java集合/" style="font-size: 16.67px;">Java集合</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/Linux文件同步/" style="font-size: 10px;">Linux文件同步</a> <a href="/tags/Mongodb/" style="font-size: 13.33px;">Mongodb</a> <a href="/tags/Mongodb备份还原/" style="font-size: 10px;">Mongodb备份还原</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/crontab/" style="font-size: 13.33px;">crontab</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/代码块/" style="font-size: 10px;">代码块</a> <a href="/tags/分布式锁/" style="font-size: 10px;">分布式锁</a> <a href="/tags/单例模式/" style="font-size: 10px;">单例模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+        	<div>
+	            &copy; 2018 
+	            <span class="with-love">
+	 			   <i class="fa fa-heart"></i>
+	 			</span>
+	            刘东旭
+	        </div>
+             
+            <div>
+	            <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	            <span class="site-uv" id="busuanzi_container_site_uv" style="display: inline;">
+	      			<i class="fa fa-user"></i>访客数
+	      			<span class="busuanzi-value" id="busuanzi_value_site_uv">887</span>
+	      		</span>
+	      		<span class="site-pv" id="busuanzi_container_site_pv" style="display: inline;">
+	     			<i class="fa fa-eye"></i>总访问量
+	      			<span class="busuanzi-value" id="busuanzi_value_site_pv">1914</span>
+	      		 </span>
+	      	</div>
+			
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://ldongxu.github.io/2017/04/25/用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题/';
+        
+        this.page.identifier = '用mongodb的Java驱动做查询－－解决$regex和$nin并列查询问题';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'ldongxu' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

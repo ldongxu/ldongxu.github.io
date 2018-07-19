@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /categories/
+Allow: /tags/ 
+
+Sitemap: https://ldongxu.github.io/sitemap.xml
+Sitemap: https://ldongxu.github.io/baidusitemap.xml

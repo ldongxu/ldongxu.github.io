@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>解决Ajax跨域访问－JSONP | 刘东旭博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="同源策略首先我们来了解一下浏览器的同源策略，浏览器为了安全都会遵循同源策略。同源策略（Same origin policy）是一种约定，它是浏览器最核心也最基本的安全功能，如果缺少了同源策略，则浏览器的正常功能可能都会受到影响。可以说Web是构建在同源策略基础之上的，浏览器只是针对同源策略的一种实现。">
+<meta name="keywords" content="Ajax,JSONP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决Ajax跨域访问－JSONP">
+<meta property="og:url" content="https://ldongxu.github.io/2016/02/24/解决Ajax跨域访问－JSONP/index.html">
+<meta property="og:site_name" content="刘东旭博客">
+<meta property="og:description" content="同源策略首先我们来了解一下浏览器的同源策略，浏览器为了安全都会遵循同源策略。同源策略（Same origin policy）是一种约定，它是浏览器最核心也最基本的安全功能，如果缺少了同源策略，则浏览器的正常功能可能都会受到影响。可以说Web是构建在同源策略基础之上的，浏览器只是针对同源策略的一种实现。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://p1.pstatp.com/large/349000064ea1c1e1107">
+<meta property="og:updated_time" content="2018-07-06T12:33:08.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="解决Ajax跨域访问－JSONP">
+<meta name="twitter:description" content="同源策略首先我们来了解一下浏览器的同源策略，浏览器为了安全都会遵循同源策略。同源策略（Same origin policy）是一种约定，它是浏览器最核心也最基本的安全功能，如果缺少了同源策略，则浏览器的正常功能可能都会受到影响。可以说Web是构建在同源策略基础之上的，浏览器只是针对同源策略的一种实现。">
+<meta name="twitter:image" content="http://p1.pstatp.com/large/349000064ea1c1e1107">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+        <meta name="google-site-verification" content="LdaelT6kBjDUrCCsrjBy5SMM7jFVjI3AC0215hMRxfU" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">刘东旭博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/pic_hd.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/pic_hd.jpg" />
+            <h2 id="name">刘东旭</h2>
+            <h3 id="title" style="margin: 1.6em 0em">null</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国 - 北京</span>
+            <a id="follow" target="_blank" href="https://github.com/ldongxu">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                26
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/ldongxu" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="mailto:ldongxu@126.com" target="_blank" title="envelope" class=tooltip>
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-解决Ajax跨域访问－JSONP" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            解决Ajax跨域访问－JSONP
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/02/24/解决Ajax跨域访问－JSONP/">
+            <time datetime="2016-02-24T02:03:59.000Z" itemprop="datePublished">2016-02-24</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h3 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h3><p>首先我们来了解一下浏览器的同源策略，浏览器为了安全都会遵循同源策略。<br>同源策略（Same origin policy）是一种约定，它是浏览器最核心也最基本的安全功能，如果缺少了同源策略，则浏览器的正常功能可能都会受到影响。可以说Web是构建在同源策略基础之上的，浏览器只是针对同源策略的一种实现。<br><a id="more"></a></p>
+<blockquote>
+<p>同源策略，它是由Netscape提出的一个著名的安全策略。<br>现在所有支持JavaScript 的浏览器都会使用这个策略。<br>所谓同源是指，域名，协议，端口相同。<br>当一个浏览器的两个tab页中分别打开来 百度和谷歌的页面<br>当浏览器的百度tab页执行一个脚本的时候会检查这个脚本是属于哪个页面的，<br>即检查是否同源，只有和百度同源的脚本才会被执行。<br>如果非同源，那么在请求数据时，浏览器会在控制台中报一个异常，提示拒绝访问。</p>
+</blockquote>
+<p>会出现跨域问题的几种情况：<br><img src="http://p1.pstatp.com/large/349000064ea1c1e1107" alt=""></p>
+<h3 id="Ajax实现跨域"><a href="#Ajax实现跨域" class="headerlink" title="Ajax实现跨域"></a>Ajax实现跨域</h3><h4 id="1-通过代理方案实现跨域"><a href="#1-通过代理方案实现跨域" class="headerlink" title="1. 通过代理方案实现跨域"></a>1. 通过代理方案实现跨域</h4><p>这种方式是通过后台(ASP、PHP、Java、ASP.NET)获取其他域名下的内容，然后再把获得内容返回到前端，这样因为在同一个域名下，所以就不会出现跨域的问题。</p>
+<p>代理实现比较麻烦，但使用最广泛，任何支持AJAX的浏览器都可以使用这种方式。</p>
+<h4 id="2-JSONP"><a href="#2-JSONP" class="headerlink" title="2. JSONP"></a>2. JSONP</h4><blockquote>
+<p>JSONP是JSON with Padding的略称。它是一个非官方的协议，它允许在服务器端集成Script tags返回至客户端，通过javascript callback的形式实现跨域访问（这仅仅是JSONP简单的实现形式）。</p>
+</blockquote>
+<p>模拟一个非同源的环境，假设A程序是localhost:20001,B程序是localhost:20002(域名相同但端口号不同)，做一个小示例。<br>在A程序添加sample.html和test.js，<br>sample.html代码如下：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns</span>=<span class="string">"http://www.w3.org/1999/xhtml"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>test<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"test.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>test.js代码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alert(<span class="string">"success"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>打开localhost:20001/sample.html后会跳出”success”这样的这样的信息框，这似乎并不能说明什么， 跨域问题到底怎么解决呢？好，现在我们模拟下非同源的环境,将我们的之前的test.js文件从A程序中移除然后拷贝到B程序中，因为test.js文件在B程序上了，所以testx.js在sample.html里的引用就应该是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;http://localhost:20002/test.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>请保持AB两个Web程序的运行状态，当你再次刷新localhost:20001/sample.html的时候，和原来一样跳出了”success”的对话框，是的，成功访问到了非同源的localhost:20002/test.js这个所谓的远程服务了。到了这一步，相信大家应该已经大概明白如何跨域访问了的原理了。</p>
+<hr>
+<p><code>&lt;script&gt;</code>标签的src属性并不被同源策略所约束，所以可以获取任何服务器上脚本并执行。</p>
+<p>JSONP的定义说明中讲到了javascript callback的形式。那我们就来修改下代码，如何实现JSONP的javascript callback的形式。<br>程序A中sample.html的代码:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span><br><span class="line">&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; &gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;title&gt;test&lt;/title&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line"> //回调函数</span><br><span class="line"> function callback(data) &#123;</span><br><span class="line">    alert(data.message);</span><br><span class="line"> &#125;</span><br><span class="line"> &lt;/script&gt;</span><br><span class="line"> &lt;script type=&quot;text/javascript&quot; src=&quot;http://localhost:20002/test.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>程序B中test.js的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//调用callback函数，并以json数据形式作为阐述传递，完成回调</span><br><span class="line">callback(&#123;message:&quot;success&quot;&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这其实就是JSONP的简单实现模式，或者说是JSONP的原型：创建一个回调函数，然后在远程服务上调用这个函数并且将JSON 数据形式作为参数传递，完成回调。（也就是类似于返回一个带结果数据的js function）。</p>
+<hr>
+<p>一般情况下，我们希望这个<code>&lt;script&gt;</code>标签引用能够动态的调用，而不是像上面因为固定在html里面所以没等页面显示就执行了，很不灵活。我们可以通过javascript动态的创建script标签，这样我们就可以灵活调用远程服务了。<br>比如程序A中sample.html的部分代码可以修改为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">      function callback(data) &#123;</span><br><span class="line">          alert(data.message);</span><br><span class="line">      &#125;</span><br><span class="line">      //添加&lt;script&gt;标签的方法</span><br><span class="line">      function addScriptTag(src)&#123;</span><br><span class="line">      var script = document.createElement(&apos;script&apos;);</span><br><span class="line">          script.setAttribute(&quot;type&quot;,&quot;text/javascript&quot;);</span><br><span class="line">          script.src = src;</span><br><span class="line">         document.body.appendChild(script);</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     window.onload = function()&#123;</span><br><span class="line">         addScriptTag(&quot;http://localhost:20002/test.js&quot;);</span><br><span class="line">     &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>程序B的test.js代码不变，我们再执行下程序，是不是和原来的一样呢。如果我们再想调用另一个远程服务的话，只要添加addScriptTag方法，传入远程服务的src值就可以了。这里说明下为什么要将addScriptTag方法放入到window.onload的方法里，原因是addScriptTag方法中有句document.body.appendChild(script);，这个script标签是被添加到body里的，由于我们写的javascript代码是在head标签中，document.body还没有初始化完毕呢，所以我们要通过window.onload方法先初始化页面，这样才不会出错。</p>
+<p>上面的例子是最简单的JSONP的实现模型，不过它还算不上一个真正的JSONP服务。我们来看一下真正的JSONP服务是怎么样的，比如Google的ajax搜索接口：<a href="http://ajax.googleapis.com/ajax/services/search/web?v=1.0&amp;q=?&amp;callback=?。" target="_blank" rel="noopener">http://ajax.googleapis.com/ajax/services/search/web?v=1.0&amp;q=?&amp;callback=?。</a><br>q=?这个问号是表示你要搜索的内容，最重要的是第二个callback=?这个是正如其名表示回调函数的名称，也就是将你自己在客户端定义的回调函数的函数名传送给服务端，服务端则会返回以你定义的回调函数名的方法，将获取的json数据传入这个方法完成回调。</p>
+<p>看看实现代码吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">     //添加&lt;script&gt;标签的方法</span><br><span class="line">     function addScriptTag(src)&#123;</span><br><span class="line">          var script = document.createElement(&apos;script&apos;);</span><br><span class="line">          script.setAttribute(&quot;type&quot;,&quot;text/javascript&quot;);</span><br><span class="line">          script.src = src;</span><br><span class="line">          document.body.appendChild(script);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">     window.onload = function()&#123;</span><br><span class="line">         //搜索apple，将自定义的回调函数名result传入callback参数中</span><br><span class="line">         addScriptTag(&quot;http://ajax.googleapis.com/ajax/services/search/web?v=1.0&amp;q=apple&amp;callback=result&quot;);</span><br><span class="line">         </span><br><span class="line">     &#125;</span><br><span class="line">     //自定义的回调函数result</span><br><span class="line">     function result(data) &#123;</span><br><span class="line">         //我们就简单的获取apple搜索结果的第一条记录中url数据</span><br><span class="line">         alert(data.responseData.results[0].unescapedUrl);</span><br><span class="line">     &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>像Google这样的JSONP服务还有很多：</p>
+<blockquote>
+<p>Digg API：来自 Digg 的头条新闻：<br><a href="http://services.digg.com/stories/top?appkey=http%3A%2F%2Fmashup.com&amp;type=javascript&amp;callback=" target="_blank" rel="noopener">http://services.digg.com/stories/top?appkey=http%3A%2F%2Fmashup.com&amp;type=javascript&amp;callback=</a>?</p>
+</blockquote>
+<blockquote>
+<p>Geonames API：邮编的位置信息：<br><a href="http://www.geonames.org/postalCodeLookupJSON?postalcode=10504&amp;country=US&amp;callback=" target="_blank" rel="noopener">http://www.geonames.org/postalCodeLookupJSON?postalcode=10504&amp;country=US&amp;callback=</a>?</p>
+</blockquote>
+<blockquote>
+<p>Flickr JSONP API：载入最新猫的图片：<br><a href="http://api.flickr.com/services/feeds/photos_public.gne?tags=cat&amp;tagmode=any&amp;format=json&amp;jsoncallback=" target="_blank" rel="noopener">http://api.flickr.com/services/feeds/photos_public.gne?tags=cat&amp;tagmode=any&amp;format=json&amp;jsoncallback=</a>?</p>
+</blockquote>
+<blockquote>
+<p>Yahoo Local Search API：在邮编为 10504 的地区搜索比萨：<br><a href="http://local.yahooapis.com/LocalSearchService/V3/localSearch?appid=YahooDemo&amp;query=pizza&amp;zip=10504&amp;results=2&amp;output=json&amp;callback=" target="_blank" rel="noopener">http://local.yahooapis.com/LocalSearchService/V3/localSearch?appid=YahooDemo&amp;query=pizza&amp;zip=10504&amp;results=2&amp;output=json&amp;callback=</a>?</p>
+</blockquote>
+<hr>
+<p>接下来我们自己来创建一个简单的远程服务，实现和上面一样的JSONP服务。还是利用Web程序A和程序B来做演示，这次我们在程序B上创建一个MyService.java文件。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@RequestMapping</span>(<span class="string">"/myService"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">ProcessRequest</span><span class="params">(String callback)</span></span>&#123;</span><br><span class="line">    String jsonDataStr = <span class="string">"&#123;\"name\":\"chopper\",\"sex\":\"man\"&#125;"</span>;</span><br><span class="line">    <span class="keyword">return</span> callback+<span class="string">"("</span>+jsonDataStr+<span class="string">")"</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>程序A的sample.html代码中的调用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">     function addScriptTag(src)&#123;</span><br><span class="line">         var script = document.createElement(&apos;script&apos;);</span><br><span class="line">         script.setAttribute(&quot;type&quot;,&quot;text/javascript&quot;);</span><br><span class="line">         script.src = src;</span><br><span class="line">         document.body.appendChild(script);</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     window.onload = function()&#123;</span><br><span class="line">         //调用远程服务</span><br><span class="line">         addScriptTag(&quot;http://localhost:20002/myService?callback=person&quot;);</span><br><span class="line">         </span><br><span class="line">     &#125;</span><br><span class="line">     //回调函数person</span><br><span class="line">     function person(data) &#123;</span><br><span class="line">         alert(data.name + &quot; is a &quot; + data.sex);</span><br><span class="line">     &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这就完成了一个最基本的JSONP服务调用了。</p>
+<hr>
+<p>下面我们来了解下jQuery是如何调用JSONP的。<br>jQuery框架也当然支持JSONP，可以使用$.getJSON(url,[data],[callback])方法(详细可以参考<a href="http://api.jquery.com/jQuery.getJSON/" target="_blank" rel="noopener">http://api.jquery.com/jQuery.getJSON/</a>)。<br>那我们就来修改下程序A的代码，改用jQuery的getJSON方法来实现(下面的例子没用用到向服务传参，所以只写了getJSON(url,[callback]))：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;http://code.jquery.com/jquery-latest.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">    $.getJSON(&quot;http://localhost:20002/myService?callback=?&quot;,function(data)&#123;</span><br><span class="line">        alert(data.name + &quot; is a a&quot; + data.sex);</span><br><span class="line">    &#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>　　结果是一样的，要注意的是在url的后面必须添加一个callback参数，这样getJSON方法才会知道是用JSONP方式去访问服务，callback后面的那个问号是内部自动生成的一个回调函数名。这个函数名大家可以debug一下看看，比如jQuery17207481773362960666_1332575486681。</p>
+<p>　　当然，假如说我们想指定自己的回调函数名，或者说服务上规定了固定回调函数名该怎么办呢？我们可以使用$.ajax方法来实现(参数较多，详细可以参考<a href="http://api.jquery.com/jQuery.ajax" target="_blank" rel="noopener">http://api.jquery.com/jQuery.ajax</a>)。先来看看如何实现吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;http://code.jquery.com/jquery-latest.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot;&gt;</span><br><span class="line">   $.ajax(&#123;</span><br><span class="line">        url:&quot;http://localhost:20002/myService?callback=?&quot;,   </span><br><span class="line">        dataType:&quot;jsonp&quot;,</span><br><span class="line">        jsonpCallback:&quot;person&quot;,</span><br><span class="line">        success:function(data)&#123;</span><br><span class="line">            alert(data.name + &quot; is a a&quot; + data.sex);</span><br><span class="line">        &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>　　没错，jsonpCallback就是可以指定我们自己的回调方法名person，远程服务接受callback参数的值就不再是自动生成的回调名，而是person。dataType是指定按照JSOPN方式访问远程服务。<br>　　利用jQuery可以很方便的实现JSONP来进行跨域访问。</p>
+<h3 id="下面给出个栗子"><a href="#下面给出个栗子" class="headerlink" title="下面给出个栗子"></a>下面给出个栗子</h3><p>一.客户端</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Content-Type"</span> <span class="attr">content</span>=<span class="string">"text/html; charset=UTF-8"</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>Insert title here<span class="tag">&lt;/<span class="name">title</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"resource/js/jquery-1.7.2.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined">  </span></span><br><span class="line"><span class="javascript">$(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;     </span></span><br><span class="line"><span class="undefined">    /*  </span></span><br><span class="line"><span class="javascript">    <span class="comment">//简写形式，效果相同  </span></span></span><br><span class="line"><span class="javascript">    $.getJSON(<span class="string">"http://app.example.com/base/json.do?sid=1494&amp;busiId=101&amp;jsonpCallback=?"</span>,  </span></span><br><span class="line"><span class="javascript">            <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;  </span></span><br><span class="line"><span class="javascript">                $(<span class="string">"#showcontent"</span>).text(<span class="string">"Result:"</span>+data.result)  </span></span><br><span class="line"><span class="undefined">    &#125;);  </span></span><br><span class="line"><span class="undefined">    */  </span></span><br><span class="line"><span class="javascript">    $.ajax(&#123;  </span></span><br><span class="line"><span class="javascript">        type : <span class="string">"get"</span>,  </span></span><br><span class="line"><span class="javascript">        <span class="keyword">async</span>:<span class="literal">false</span>,  </span></span><br><span class="line"><span class="javascript">        url : <span class="string">"http://app.example.com/base/json.do?sid=1494&amp;busiId=101"</span>,  </span></span><br><span class="line"><span class="javascript">        dataType : <span class="string">"jsonp"</span>,<span class="comment">//数据类型为jsonp  </span></span></span><br><span class="line"><span class="javascript">        jsonp: <span class="string">"jsonpCallback"</span>,<span class="comment">//服务端用于接收callback调用的function名的参数  </span></span></span><br><span class="line"><span class="javascript">        success : <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;  </span></span><br><span class="line"><span class="javascript">            $(<span class="string">"#showcontent"</span>).text(<span class="string">"Result:"</span>+data.result)  </span></span><br><span class="line"><span class="undefined">        &#125;,  </span></span><br><span class="line"><span class="javascript">        error:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;  </span></span><br><span class="line"><span class="javascript">            alert(<span class="string">'fail'</span>);  </span></span><br><span class="line"><span class="undefined">        &#125;  </span></span><br><span class="line"><span class="undefined">    &#125;);   </span></span><br><span class="line"><span class="undefined">&#125;);  </span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"showcontent"</span>&gt;</span>Result:<span class="tag">&lt;/<span class="name">div</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p> 二.服务器端</p>
+<p>Java代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;  </span><br><span class="line"><span class="keyword">import</span> java.io.PrintWriter;  </span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;  </span><br><span class="line"><span class="keyword">import</span> java.util.Map;  </span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;  </span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;  </span><br><span class="line"><span class="keyword">import</span> net.sf.json.JSONObject;  </span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;  </span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;  </span><br><span class="line">  </span><br><span class="line"><span class="meta">@Controller</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExchangeJsonController</span> </span>&#123;  </span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/base/json.do"</span>)  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exchangeJson</span><span class="params">(HttpServletRequest request,HttpServletResponse response)</span> </span>&#123;  </span><br><span class="line">       <span class="keyword">try</span> &#123;  </span><br><span class="line">        response.setContentType(<span class="string">"text/plain"</span>);  </span><br><span class="line">        response.setHeader(<span class="string">"Pragma"</span>, <span class="string">"No-cache"</span>);  </span><br><span class="line">        response.setHeader(<span class="string">"Cache-Control"</span>, <span class="string">"no-cache"</span>);  </span><br><span class="line">        response.setDateHeader(<span class="string">"Expires"</span>, <span class="number">0</span>);  </span><br><span class="line">        Map&lt;String,String&gt; map = <span class="keyword">new</span> HashMap&lt;String,String&gt;();   </span><br><span class="line">        map.put(<span class="string">"result"</span>, <span class="string">"content"</span>);  </span><br><span class="line">        PrintWriter out = response.getWriter();       </span><br><span class="line">        JSONObject resultJSON = JSONObject.fromObject(map); <span class="comment">//根据需要拼装json  </span></span><br><span class="line">        String jsonpCallback = request.getParameter(<span class="string">"jsonpCallback"</span>);<span class="comment">//客户端请求参数  </span></span><br><span class="line">        out.println(jsonpCallback+<span class="string">"("</span>+resultJSON.toString(<span class="number">1</span>,<span class="number">1</span>)+<span class="string">")"</span>);<span class="comment">//返回jsonp格式数据  </span></span><br><span class="line">        out.flush();  </span><br><span class="line">        out.close();  </span><br><span class="line">      &#125; <span class="keyword">catch</span> (IOException e) &#123;  </span><br><span class="line">       e.printStackTrace();  </span><br><span class="line">      &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+    <div class="article-tag" style="position:absolute;">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Ajax/">Ajax</a>, <a class="tag-link" href="/tags/JSONP/">JSONP</a>
+    </div>
+
+            
+    
+        <a href="https://ldongxu.github.io/2016/02/24/解决Ajax跨域访问－JSONP/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://ldongxu.github.io/2016/02/24/解决Ajax跨域访问－JSONP/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/03/25/静态工具类获取Spring-IoC管理的bean组件/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    静态工具类获取Spring IoC管理的bean组件
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/01/02/在同一个git-Repository备份hexo文章及配置/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">在同一个git Repository备份hexo文章及配置</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo博客/">Hexo博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 10px;">Ajax</a> <a href="/tags/Gson/" style="font-size: 10px;">Gson</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JMM/" style="font-size: 10px;">JMM</a> <a href="/tags/JSONP/" style="font-size: 10px;">JSONP</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java初始化/" style="font-size: 10px;">Java初始化</a> <a href="/tags/Java并发编程/" style="font-size: 10px;">Java并发编程</a> <a href="/tags/Java队列/" style="font-size: 10px;">Java队列</a> <a href="/tags/Java集合/" style="font-size: 16.67px;">Java集合</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/Linux文件同步/" style="font-size: 10px;">Linux文件同步</a> <a href="/tags/Mongodb/" style="font-size: 13.33px;">Mongodb</a> <a href="/tags/Mongodb备份还原/" style="font-size: 10px;">Mongodb备份还原</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/crontab/" style="font-size: 13.33px;">crontab</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/代码块/" style="font-size: 10px;">代码块</a> <a href="/tags/分布式锁/" style="font-size: 10px;">分布式锁</a> <a href="/tags/单例模式/" style="font-size: 10px;">单例模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+        	<div>
+	            &copy; 2018 
+	            <span class="with-love">
+	 			   <i class="fa fa-heart"></i>
+	 			</span>
+	            刘东旭
+	        </div>
+             
+            <div>
+	            <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	            <span class="site-uv" id="busuanzi_container_site_uv" style="display: inline;">
+	      			<i class="fa fa-user"></i>访客数
+	      			<span class="busuanzi-value" id="busuanzi_value_site_uv">887</span>
+	      		</span>
+	      		<span class="site-pv" id="busuanzi_container_site_pv" style="display: inline;">
+	     			<i class="fa fa-eye"></i>总访问量
+	      			<span class="busuanzi-value" id="busuanzi_value_site_pv">1914</span>
+	      		 </span>
+	      	</div>
+			
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://ldongxu.github.io/2016/02/24/解决Ajax跨域访问－JSONP/';
+        
+        this.page.identifier = '解决Ajax跨域访问－JSONP';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'ldongxu' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

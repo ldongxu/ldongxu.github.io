@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Java中类与对象的比较及hashCode和equals方法详解 | 刘东旭博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="重新认识理解Java类、对象之间的对比，和equals和hashCode方法重要性。">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中类与对象的比较及hashCode和equals方法详解">
+<meta property="og:url" content="https://ldongxu.github.io/2017/05/26/Java中类与对象的比较及hashCode和equals方法详解/index.html">
+<meta property="og:site_name" content="刘东旭博客">
+<meta property="og:description" content="重新认识理解Java类、对象之间的对比，和equals和hashCode方法重要性。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-06T12:33:08.041Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中类与对象的比较及hashCode和equals方法详解">
+<meta name="twitter:description" content="重新认识理解Java类、对象之间的对比，和equals和hashCode方法重要性。">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+        <meta name="google-site-verification" content="LdaelT6kBjDUrCCsrjBy5SMM7jFVjI3AC0215hMRxfU" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">刘东旭博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">首页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/pic_hd.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">首页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/pic_hd.jpg" />
+            <h2 id="name">刘东旭</h2>
+            <h3 id="title" style="margin: 1.6em 0em">null</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>中国 - 北京</span>
+            <a id="follow" target="_blank" href="https://github.com/ldongxu">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                26
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                25
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/ldongxu" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="mailto:ldongxu@126.com" target="_blank" title="envelope" class=tooltip>
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Java中类与对象的比较及hashCode和equals方法详解" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Java中类与对象的比较及hashCode和equals方法详解
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/05/26/Java中类与对象的比较及hashCode和equals方法详解/">
+            <time datetime="2017-05-26T07:03:49.000Z" itemprop="datePublished">2017-05-26</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>重新认识理解Java类、对象之间的对比，和equals和hashCode方法重要性。<br><a id="more"></a></p>
+<h3 id="类与类的比较"><a href="#类与类的比较" class="headerlink" title="类与类的比较"></a>类与类的比较</h3><p>类与类的比较，通常有两种方式：</p>
+<p>1、 直接用 == 比较class：在Java中，类是静态的，唯一的，共享的单例，所以这里用 == 在恰当不过了，使用 == 更能说明实现关系。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Integer obj1 = 1;</span><br><span class="line">Integer obj2 = 1;</span><br><span class="line">if(Integer.class == Integer.class) &#123;</span><br><span class="line">  // true</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if(obj1.getClass() == obj2.getClass()) &#123;</span><br><span class="line">  // true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2、 比较 class.getName()。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Integer obj1 = 1;</span><br><span class="line">Integer obj2 = 1;</span><br><span class="line">if(Integer.class.getName() == Integer.class.getName()) &#123;</span><br><span class="line">  // true</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if(obj1.getClass().getName() == obj2.getClass().getName()) &#123;</span><br><span class="line">  // true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="类与对象的比较"><a href="#类与对象的比较" class="headerlink" title="类与对象的比较"></a>类与对象的比较</h3><p>判读啊一个对象和一个类是不是具有实现关系，通常有两种方式：</p>
+<p>1、obj instanceof Class ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 注意：obj 不能是原始类型，例如 int, long</span><br><span class="line">// obj 只能是引用类型，例如 Integer, Long</span><br><span class="line">Integer obj = 1;</span><br><span class="line">if(obj instanceof Integer) &#123;</span><br><span class="line">  // true</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if(obj instanceof Object) &#123;</span><br><span class="line">  // true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实现方式：先判断 obj 是不是 null，随后判断 obj.getClass() 与 Integer.class 是否相等。<br>因此 instanceof 相等于：<br><code>if(obj != null &amp;&amp; obj.getClass() == Integer.class)</code></p>
+<blockquote>
+<p>instanceof 用于检测类与对象的 直接实现关系，检测方式是 对象-&gt;类。</p>
+</blockquote>
+<p>2、 Class&lt;?&gt;.isInstance(obj)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 注意：obj 可以是引用类型，也可以是原始类型，例如 int, long</span><br><span class="line">Integer obj = 1;</span><br><span class="line">if(Integer.class.isInstance(obj)) &#123;</span><br><span class="line">  // true</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if(Object.class.isInstance(obj)) &#123;</span><br><span class="line">  // true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Class&lt;?&gt;.isInstance(obj) 用于检测 非直接实现关系，检测方式是 类-&gt;对象。</p>
+</blockquote>
+<p><code>isInstance</code>是用C语言 native 代码实现的。当一个类继承了某个接口，类，或者而是抽象类。那么，<code>isInstance</code> 旨在查找出这个对象到底实现了哪些类。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">interface I &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class A implements I &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class B extends A &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">B b = new B();</span><br><span class="line"></span><br><span class="line">I.class.isInstance(b); //查询b是不是实现了接口I true</span><br><span class="line">A.class.isInstance(b);//查询b是不实现了A类  true</span><br><span class="line">B.class.isInstance(b);//查询b是不实现了B类  true</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>通常来说 ,对于一个对象和一个类来说，(obj instanceOf ObjClass) 关系如果为真，那么Class&lt;?.isInstance(obj)关系也为真。<br>但反过来就不一样了。<br>Class&lt;?&gt;.isInstance(obj)更加适合 泛类型 的检测（如代理，接口，抽象类等规则）<br>而 instanceOf符合直接类型的检测。</p>
+</blockquote>
+<h3 id="对象与对象的比较"><a href="#对象与对象的比较" class="headerlink" title="对象与对象的比较"></a>对象与对象的比较</h3><p>一、基本类型比较</p>
+<p>Java中，基本类型比较用“==”，只要两个基本类型值相等即返回ture，否则返回false。</p>
+<p>二、引用类型比较</p>
+<p>引用类型比较比较变态，可以用“==”，也可以用“equals()”来比较，equals()方法来自于Object类，每个自定义的类都可以重写这个方法。Object类中的equals()方法仅仅通过“==”来比较两个对象是否相等。</p>
+<p>在用“==”比较引用类型时，仅当两个应用变量的对象指向同一个对象时，才返回ture。言外之意就是要求两个变量所指内存地址相等的时候，才能返回true，每个对象都有自己的一块内存，因此必须指向同一个对象才返回ture。</p>
+<p>我们看一个例子，让我们创建一个简单的类Employee：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class Employee</span><br><span class="line">&#123;</span><br><span class="line">    private Integer id;</span><br><span class="line">    private String firstname;</span><br><span class="line">    private String lastName;</span><br><span class="line">    private String department;</span><br><span class="line"></span><br><span class="line">    public Integer getId() &#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line">    public void setId(Integer id) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">    public String getFirstname() &#123;</span><br><span class="line">        return firstname;</span><br><span class="line">    &#125;</span><br><span class="line">    public void setFirstname(String firstname) &#123;</span><br><span class="line">        this.firstname = firstname;</span><br><span class="line">    &#125;</span><br><span class="line">    public String getLastName() &#123;</span><br><span class="line">        return lastName;</span><br><span class="line">    &#125;</span><br><span class="line">    public void setLastName(String lastName) &#123;</span><br><span class="line">        this.lastName = lastName;</span><br><span class="line">    &#125;</span><br><span class="line">    public String getDepartment() &#123;</span><br><span class="line">        return department;</span><br><span class="line">    &#125;</span><br><span class="line">    public void setDepartment(String department) &#123;</span><br><span class="line">        this.department = department;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class EqualsTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Employee e1 = new Employee();</span><br><span class="line">        Employee e2 = new Employee();</span><br><span class="line"></span><br><span class="line">        e1.setId(100);</span><br><span class="line">        e2.setId(100);</span><br><span class="line">     </span><br><span class="line">        System.out.println(e1.equals(e2)); //Prints false in console</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>毫无疑问，上面的程序将输出false。<br>接下来我们重写一下equals()方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public boolean equals(Object o) &#123;</span><br><span class="line">        if(o == null)</span><br><span class="line">        &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        if (o == this)</span><br><span class="line">        &#123;</span><br><span class="line">           return true;</span><br><span class="line">        &#125;</span><br><span class="line">        if (getClass() != o.getClass())</span><br><span class="line">        &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        Employee e = (Employee) o;</span><br><span class="line">        return (this.getId() == e.getId());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在重写equals方法后，EauqlsTest将会输出true。</p>
+<p>但是现在有一种情况，请看下面示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import java.util.HashSet;</span><br><span class="line">import java.util.Set;</span><br><span class="line"></span><br><span class="line">public class EqualsTest</span><br><span class="line">&#123;</span><br><span class="line">    public static void main(String[] args)</span><br><span class="line">    &#123;</span><br><span class="line">        Employee e1 = new Employee();</span><br><span class="line">        Employee e2 = new Employee();</span><br><span class="line"></span><br><span class="line">        e1.setId(100);</span><br><span class="line">        e2.setId(100);</span><br><span class="line"></span><br><span class="line">        System.out.println(e1.equals(e2)); //Prints &apos;true&apos;</span><br><span class="line"></span><br><span class="line">        Set&lt;Employee&gt; employees = new HashSet&lt;Employee&gt;();</span><br><span class="line">        employees.add(e1);</span><br><span class="line">      </span><br><span class="line">        System.out.println(employees.contains(e2)); // Print ‘false’</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果两个employee对象equals返回true，Set中应该只存储一个对象<code>employees.contains(e2)</code>应该返回true才对，问题在哪里呢？<br>我们忘掉了第二个重要的方法hashCode()。</p>
+<blockquote>
+<p>就像JDK的Javadoc中所说的一样，如果重写equals()方法必须要重写hashCode()方法。</p>
+</blockquote>
+<p><strong>需要注意的</strong></p>
+<ul>
+<li>尽量保证使用对象的同一个属性来生成hashCode()和equals()两个方法。在我们的案例中,我们使用员工id。</li>
+<li>eqauls方法必须保证一致（如果对象没有被修改，equals应该返回相同的值）</li>
+<li>任何时候只要a.equals(b),那么a.hashCode()必须和b.hashCode()相等。</li>
+<li>两者必须同时重写。</li>
+</ul>
+<p><strong>当使用ORM的时候特别要注意的</strong></p>
+<ul>
+<li>如果你使用ORM处理一些对象的话，你要确保在hashCode()和equals()对象中使用getter和setter而不是直接引用成员变量。因为在ORM中有的时候成员变量会被延时加载，这些变量只有当getter方法被调用的时候才真正可用。</li>
+<li>例如在我们的例子中，如果我们使用e1.id == e2.id则可能会出现这个问题，但是我们使用e1.getId() == e2.getId()就不会出现这个问题。</li>
+</ul>
+<h3 id="equals-和hashCode-方法"><a href="#equals-和hashCode-方法" class="headerlink" title="equals()和hashCode()方法"></a>equals()和hashCode()方法</h3><p>java.lang.Object类中有两个非常重要的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public boolean equals(Object obj)</span><br><span class="line">public int hashCode()</span><br></pre></td></tr></table></figure></p>
+<p>Object类是类继承结构的基础，所以是每一个类的父类。所有的对象，包括数组，都实现了在Object类中定义的方法。</p>
+<h4 id="一、equals-方法详解"><a href="#一、equals-方法详解" class="headerlink" title="一、equals()方法详解"></a>一、equals()方法详解</h4><p>equals()方法是用来判断其他的对象是否和该对象相等.</p>
+<p>  equals()方法在object类中定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public boolean equals(Object obj) &#123;  </span><br><span class="line">    return (this == obj);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>很明显是对两个对象的地址值进行的比较（即比较引用是否相同）。但是我们知道，String 、Math、Integer、Double等这些封装类在使用equals()方法时，已经覆盖了object类的equals()方法。</p>
+<p>  比如在String类中如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public boolean equals(Object anObject) &#123;  </span><br><span class="line">    if (this == anObject) &#123;  </span><br><span class="line">        return true;  </span><br><span class="line">    &#125;  </span><br><span class="line">    if (anObject instanceof String) &#123;  </span><br><span class="line">        String anotherString = (String)anObject;  </span><br><span class="line">        int n = count;  </span><br><span class="line">        if (n == anotherString.count) &#123;  </span><br><span class="line">            char v1[] = value;  </span><br><span class="line">            char v2[] = anotherString.value;  </span><br><span class="line">            int i = offset;  </span><br><span class="line">            int j = anotherString.offset;  </span><br><span class="line">            while (n– != 0) &#123;  </span><br><span class="line">                if (v1[i++] != v2[j++])  </span><br><span class="line">                    return false;  </span><br><span class="line">            &#125;  </span><br><span class="line">            return true;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    return false;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>很明显，这是进行的内容比较，而已经不再是地址的比较。依次类推Math、Integer、Double等这些类都是重写了equals()方法的，从而进行的是内容的比较。当然，基本类型是进行值的比较。</p>
+<p>equals方法的性质有：</p>
+<ul>
+<li><p>自反性（reflexive）。对于任意不为null的引用值x，x.equals(x)一定是true。</p>
+</li>
+<li><p>对称性（symmetric）。对于任意不为null的引用值x和y，当且仅当x.equals(y)是true时，y.equals(x)也是true。</p>
+</li>
+<li><p>传递性（transitive）。对于任意不为null的引用值x、y和z，如果x.equals(y)是true，同时y.equals(z)是true，那么x.equals(z)一定是true。</p>
+</li>
+<li><p>一致性（consistent）。对于任意不为null的引用值x和y，如果用于equals比较的对象信息没有被修改的话，多次调用时x.equals(y)要么一致地返回true要么一致地返回false。</p>
+</li>
+<li><p>对于任意不为null的引用值x，x.equals(null)返回false。</p>
+</li>
+</ul>
+<p>对于Object类来说，equals()方法在对象上实现的是差别可能性最大的等价关系，即，对于任意非null的引用值x和y，当且仅当x和y引用的是同一个对象，该方法才会返回true。</p>
+<p><strong><em>需要注意的是当equals()方法被override时，hashCode()也要被override。按照一般hashCode()方法的实现来说，相等的对象，它们的hash code一定相等。</em></strong></p>
+<h4 id="二、hashcode-方法详解"><a href="#二、hashcode-方法详解" class="headerlink" title="二、hashcode()方法详解"></a>二、hashcode()方法详解</h4><p>hashCode()方法给对象返回一个hash code值。这个方法被用于hash tables，例如HashMap。</p>
+<p>它的性质是：</p>
+<ul>
+<li><p>在一个Java应用的执行期间，如果一个对象提供给equals做比较的信息没有被修改的话，该对象多次调用hashCode()方法，该方法必须始终如一返回同一个integer。</p>
+</li>
+<li><p>如果两个对象根据equals(Object)方法是相等的，那么调用二者各自的hashCode()方法必须产生同一个integer结果。</p>
+</li>
+<li><p>并不要求根据equals(java.lang.Object)方法不相等的两个对象，调用二者各自的hashCode()方法必须产生不同的integer结果。然而，程序员应该意识到对于不同的对象产生不同的integer结果，有可能会提高hash table的性能。</p>
+</li>
+</ul>
+<p>大量的实践表明，由Object类定义的hashCode()方法对于不同的对象返回不同的integer。</p>
+<p>在object类中，hashCode定义如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public native int hashCode();</span><br></pre></td></tr></table></figure></p>
+<p> 说明是一个本地方法，它的实现是根据本地机器相关的。当然我们可以在自己写的类中覆盖hashcode()方法，比如String、Integer、Double等这些类都是覆盖了hashcode()方法的。<br>例如在String类中定义的hashcode()方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public int hashCode() &#123;  </span><br><span class="line">    int h = hash;  </span><br><span class="line">    if (h == 0) &#123;  </span><br><span class="line">        int off = offset;  </span><br><span class="line">        char val[] = value;  </span><br><span class="line">        int len = count;  </span><br><span class="line">  </span><br><span class="line">        for (int i = 0; i &lt; len; i++) &#123;  </span><br><span class="line">            h = 31 * h + val[off++];  </span><br><span class="line">        &#125;  </span><br><span class="line">        hash = h;  </span><br><span class="line">    &#125;  </span><br><span class="line">    return h;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>想要弄明白hashCode的作用，必须要先知道Java中的集合。　　<br>    总的来说，Java中的集合（Collection）有两类，一类是List，再有一类是Set。前者集合内的元素是有序的，元素可以重复；后者元素无序，但元素不可重复。这里就引出一个问题：要想保证元素不重复，可两个元素是否重复应该依据什么来判断呢？<br>    这就是Object.equals方法了。但是，如果每增加一个元素就检查一次，那么当元素很多时，后添加到集合中的元素比较的次数就非常多了。也就是说，如果集合中现在已经有1000个元素，那么第1001个元素加入集合时，它就要调用1000次equals方法。这显然会大大降低效率。<br>    于是，Java采用了哈希表的原理。哈希（Hash）实际上是个人名，由于他提出一哈希算法的概念，所以就以他的名字命名了。哈希算法也称为散列算法，是将数据依特定算法直接指定到一个地址上，初学者可以简单理解，hashCode方法实际上返回的就是对象存储的物理地址（实际可能并不是）。<br>    这样一来，当集合要添加新的元素时，先调用这个元素的hashCode方法，就一下子能定位到它应该放置的物理位置上。如果这个位置上没有元素，它就可以直接存储在这个位置上，不用再进行任何比较了；如果这个位置上已经有元素了，就调用它的equals方法与新元素进行比较，相同的话就不存了，不相同就散列其它的地址。所以这里存在一个冲突解决的问题。这样一来实际调用equals方法的次数就大大降低了，几乎只需要一两次。  </p>
+<p> <strong>简而言之，在集合查找时，hashcode能大大降低对象比较次数，提高查找效率！</strong></p>
+<p><strong>Java对象的eqauls方法和hashCode方法是这样规定的：</strong></p>
+<ul>
+<li><p>1、相等（相同）的对象必须具有相等的哈希码（或者散列码）。</p>
+</li>
+<li><p>2、如果两个对象的hashCode相同，它们并不一定相同。</p>
+</li>
+</ul>
+<p>以下是Object对象API关于equal方法和hashCode方法的说明(是对之前2点的官方详细说明)：</p>
+<blockquote>
+<ul>
+<li>If two objects are equal according to the equals(Object) method, then calling the hashCode method on each of the two objects must produce the same integer result.</li>
+<li>It is not required that if two objects are unequal according to the equals(java.lang.Object) method, then calling the hashCode method on each of the two objects must produce distinct integer results. However, the programmer should be aware that producing distinct integer results for unequal objects may improve the performance of hash tables.</li>
+</ul>
+</blockquote>
+<p><em>如不按要求去做了，会发现相同的对象可以出现在Set集合中，同时，增加新元素的效率会大大下降。</em></p>
+<p>在object类中，hashcode()方法是本地方法，返回的是对象的地址值，而object类中的equals()方法比较的也是两个对象的地址值，如果equals()相等，说明两个对象地址值也相等，当然hashcode()也就相等了；在String类中，equals()返回的是两个对象内容的比较，当两个对象内容相等时，Hashcode()方法根据String类的重写代码的分析，也可知道hashcode()返回结果也会相等。以此类推，可以知道Integer、Double等封装类中经过重写的equals()和hashcode()方法也同样适合于这个原则。当然没有经过重写的类，在继承了object类的equals()和hashcode()方法后，也会遵守这个原则。</p>
+<h4 id="三、示例说明"><a href="#三、示例说明" class="headerlink" title="三、示例说明"></a>三、示例说明</h4><p>下面以HashSet为例进行分析，我们都知道：在hashSet中不允许出现重复对象，元素的位置也是不确定的。在hashset中又是怎样判定元素是否重复的呢？</p>
+<p>在java的集合中，判断两个对象是否相等的规则是：</p>
+<ul>
+<li><p>1.判断两个对象的hashCode是否相等<br>  如果不相等，认为两个对象也不相等，完毕；<br>  如果相等，转入2。<br>  （这一点只是为了提高存储效率而要求的，其实理论上没有也可以，但如果没有，实际使用时效率会大大降低，所以我们这里将其做为必需的。）</p>
+</li>
+<li><p>2.判断两个对象用equals运算是否相等<br>  如果不相等，认为两个对象也不相等;<br>  如果相等，认为两个对象相等。（equals()是判断两个对象是否相等的关键）</p>
+</li>
+</ul>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">package com.bijian.study;</span><br><span class="line"></span><br><span class="line">import java.util.HashSet;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line"></span><br><span class="line">public class HashSetTest &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        HashSet hs = new HashSet();</span><br><span class="line">        hs.add(new Student(1, &quot;zhangsan&quot;));</span><br><span class="line">        hs.add(new Student(2, &quot;lisi&quot;));</span><br><span class="line">        hs.add(new Student(3, &quot;wangwu&quot;));</span><br><span class="line">        hs.add(new Student(1, &quot;zhangsan&quot;));</span><br><span class="line"></span><br><span class="line">        Iterator it = hs.iterator();</span><br><span class="line">        while (it.hasNext()) &#123;</span><br><span class="line">            System.out.println(it.next());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Student &#123;</span><br><span class="line">    int num;</span><br><span class="line">    String name;</span><br><span class="line"></span><br><span class="line">    Student(int num, String name) &#123;</span><br><span class="line">        this.num = num;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return num + &quot;:&quot; + name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：</p>
+<pre><code>1:zhangsan  
+3:wangwu  
+2:lisi  
+1:zhangsan 
+</code></pre><p>为什么hashSet添加了相等的元素呢，这是不是和hashset的原则违背了呢？<br>回答是：没有。因为在根据hashcode()对两次建立的new Student(1,“zhangsan”)对象进行比较时，生成的是不同的哈希码值，所以hashset把他当作不同的对象对待了，当然此时的equals()方法返回的值也不等。</p>
+<p> 怎么解决这个问题呢？答案是：在Student类中重新hashcode()和equals()方法。</p>
+<p><strong>重写equals()和hashcode()小结：</strong></p>
+<ul>
+<li>1.重点是equals，重写hashCode只是技术要求（为了提高效率）</li>
+<li>2.为什么要重写equals呢？因为在java的集合框架中，是通过equals来判断两个对象是否相等的</li>
+<li>3.在hibernate中，经常使用set集合来保存相关对象，而set集合是不允许重复的。在向HashSet集合中添加元素时，其实只要重写equals()这一条也可以。但当hashSet中元素比较多时，或者是重写的equals()方法比较复杂时，我们只用equals()方法进行比较判断，效率也会非常低，所以引入了hashCode()这个方法，只是为了提高效率，且这是非常有必要的。</li>
+</ul>
+<p>比如可以这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public int hashCode()&#123;  </span><br><span class="line">   return 1; //等价于hashcode无效  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样做的效果就是在比较哈希码的时候不能进行判断，因为每个对象返回的哈希码都是1，每次都必须要经过比较equals()方法后才能进行判断是否重复，但这会引起效率的大大降低。</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            
+    <div class="article-tag" style="position:absolute;">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>
+    </div>
+
+            
+    
+        <a href="https://ldongxu.github.io/2017/05/26/Java中类与对象的比较及hashCode和equals方法详解/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://ldongxu.github.io/2017/05/26/Java中类与对象的比较及hashCode和equals方法详解/">评论</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/06/01/Java位运算/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Java位运算
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/05/24/Java初始化/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Java初始化</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+        <section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo博客/">Hexo博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mongodb/">Mongodb</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Ajax/" style="font-size: 10px;">Ajax</a> <a href="/tags/Gson/" style="font-size: 10px;">Gson</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/JMM/" style="font-size: 10px;">JMM</a> <a href="/tags/JSONP/" style="font-size: 10px;">JSONP</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java初始化/" style="font-size: 10px;">Java初始化</a> <a href="/tags/Java并发编程/" style="font-size: 10px;">Java并发编程</a> <a href="/tags/Java队列/" style="font-size: 10px;">Java队列</a> <a href="/tags/Java集合/" style="font-size: 16.67px;">Java集合</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/Linux文件同步/" style="font-size: 10px;">Linux文件同步</a> <a href="/tags/Mongodb/" style="font-size: 13.33px;">Mongodb</a> <a href="/tags/Mongodb备份还原/" style="font-size: 10px;">Mongodb备份还原</a> <a href="/tags/Queue/" style="font-size: 10px;">Queue</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/crontab/" style="font-size: 13.33px;">crontab</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/rsync/" style="font-size: 10px;">rsync</a> <a href="/tags/shell/" style="font-size: 10px;">shell</a> <a href="/tags/代码块/" style="font-size: 10px;">代码块</a> <a href="/tags/分布式锁/" style="font-size: 10px;">分布式锁</a> <a href="/tags/单例模式/" style="font-size: 10px;">单例模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+        	<div>
+	            &copy; 2018 
+	            <span class="with-love">
+	 			   <i class="fa fa-heart"></i>
+	 			</span>
+	            刘东旭
+	        </div>
+             
+            <div>
+	            <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	            <span class="site-uv" id="busuanzi_container_site_uv" style="display: inline;">
+	      			<i class="fa fa-user"></i>访客数
+	      			<span class="busuanzi-value" id="busuanzi_value_site_uv">887</span>
+	      		</span>
+	      		<span class="site-pv" id="busuanzi_container_site_pv" style="display: inline;">
+	     			<i class="fa fa-eye"></i>总访问量
+	      			<span class="busuanzi-value" id="busuanzi_value_site_pv">1914</span>
+	      		 </span>
+	      	</div>
+			
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://ldongxu.github.io/2017/05/26/Java中类与对象的比较及hashCode和equals方法详解/';
+        
+        this.page.identifier = 'Java中类与对象的比较及hashCode和equals方法详解';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'ldongxu' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
